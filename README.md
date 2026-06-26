@@ -18,9 +18,9 @@ backend.
 - **▶ Live web demo: https://clearview-savings-mobile.vercel.app** — open it and
   tap **"Explore in demo mode"** to walk the whole app on built-in sample data
   (no account or backend needed).
+- **Install on Android:** download the APK from the
+  [latest release](https://github.com/Talnerith/clearview-savings-mobile/releases/latest).
 - **Run locally:** see [Getting started](#getting-started) below.
-- **Android APK:** _(attach a build to a GitHub Release — see [Build an
-  installable app](#build-an-installable-app-eas))_.
 
 ## Screenshots
 
