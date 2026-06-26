@@ -29,13 +29,21 @@
 
 - Nothing mid-edit.
 
+## Verified this session
+
+- `npm install` succeeded; `npx expo install --fix` aligned versions to SDK 52
+  (async-storage 1.23.1, react-native 0.76.9); added `expo-asset` (required by
+  the Metro config).
+- `npm run typecheck` passes clean (exit 0).
+- `npx expo export --platform ios` bundles the full route graph (969 modules,
+  exit 0) — all imports and routes resolve.
+
 ## Not started
 
-- `npm install` + `npm run typecheck` on a machine with dependencies installed
-  (the scaffold was written without a node_modules install in this session).
 - First real run against the live Supabase project (needs `.env.local` filled
-  from the web app's keys).
+  from the web app's keys, then `npm start` + sign in + Diagnostics).
 - EAS build/submit pipeline (out of scope for M1).
+- Custom app icon/splash in `assets/` (Expo defaults for now).
 
 ## Decisions made this session
 
