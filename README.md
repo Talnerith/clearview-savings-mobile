@@ -15,26 +15,27 @@ backend.
 
 ## Try it
 
-- **Demo mode (no setup):** run the app and tap **"Explore in demo mode"** on
-  the sign-in screen — the whole app is explorable with built-in sample data, no
-  account or backend required.
-- **Live web demo:** _(add your deployed URL here — see [Deploy a web
-  demo](#deploy-a-web-demo))_.
+- **▶ Live web demo: https://clearview-savings-mobile.vercel.app** — open it and
+  tap **"Explore in demo mode"** to walk the whole app on built-in sample data
+  (no account or backend needed).
+- **Run locally:** see [Getting started](#getting-started) below.
 - **Android APK:** _(attach a build to a GitHub Release — see [Build an
   installable app](#build-an-installable-app-eas))_.
 
 ## Screenshots
 
-Captured from demo mode (no real data). See
-[`assets/screenshots/`](./assets/screenshots/) for how to add/update these.
+The quickest way to see the app is the
+[live demo](https://clearview-savings-mobile.vercel.app) above. Static
+screenshots (captured from demo mode, no real data) live in
+[`assets/screenshots/`](./assets/screenshots/) — see that folder's README for
+how to add them.
 
-| Caregiver — patients | Patient — accounts | Diagnostics |
-| --- | --- | --- |
-| ![Caregiver patient list](./assets/screenshots/caregiver-patients.png) | ![Patient accounts](./assets/screenshots/patient-accounts.png) | ![Backend diagnostics](./assets/screenshots/diagnostics.png) |
-
-| Sign in (+ demo) | Patient — account detail |
+<!-- Once screenshots are added to assets/screenshots/, embed them here, e.g.:
+| Patient — accounts | Diagnostics |
 | --- | --- |
-| ![Sign in](./assets/screenshots/sign-in.png) | ![Account detail](./assets/screenshots/account-detail.png) |
+| ![Patient accounts](./assets/screenshots/patient-accounts.png) | ![Backend diagnostics](./assets/screenshots/diagnostics.png) |
+-->
+
 
 ## Two surfaces in one app
 

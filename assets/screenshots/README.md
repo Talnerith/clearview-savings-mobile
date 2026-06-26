@@ -1,7 +1,13 @@
 # Screenshots
 
-Drop screenshots here with these exact filenames so the main README picks them
-up automatically:
+There's a [live web demo](https://clearview-savings-mobile.vercel.app), so
+screenshots are a bonus — **even 1–2 is plenty.** A strong pair is the patient
+accounts screen (`patient-accounts.png`) and the diagnostics screen
+(`diagnostics.png`). Add the files here, then uncomment the image table in the
+main `README.md` (there's a ready-to-use snippet in a comment in its
+"Screenshots" section).
+
+Suggested filenames so the snippet works as-is:
 
 | File | Screen to capture (in demo mode) |
 | --- | --- |
