@@ -6,3 +6,4 @@ state lives in `docs/milestones/M{N}-progress.md`, not here.
 
 - [Shared backend](shared-backend.md) — same Supabase project as the web app; RLS is the boundary; publishable key only
 - [Re-anchor workflow](re-anchor-workflow.md) — how to resume across sessions; run scripts/re-anchor
+- [Deployment](deployment.md) — public URLs: GitHub repo, Vercel web demo, EAS project, APK release

@@ -1,92 +1,93 @@
 # M1 — Progress / Handoff
 
-> This is the entry point for the next session. Read CLAUDE.md →
-> docs/specs/M1.md → docs/milestones/M1.md → this file, then inspect the files
-> to confirm reality matches. Last updated: 2026-06-26 (initial scaffold).
+> Entry point for the next session. Read CLAUDE.md → docs/specs/M1.md →
+> docs/milestones/M1.md → this file, then inspect the files to confirm reality
+> matches. Last updated: 2026-06-26 (end of session 2).
+>
+> Quick re-anchor: `bash scripts/re-anchor.sh` (or `pwsh scripts/re-anchor.ps1`).
 
-## Done
+## Where things stand (one line)
 
-- Project config: `package.json`, `app.json`, `tsconfig.json`,
-  `babel.config.js`, `.gitignore`, `.env.example`, `expo-env.d.ts`.
-- `lib/theme.ts` — neutral palette + patient/caregiver type scales.
-- `lib/supabase.ts` — shared-backend client (publishable key, AsyncStorage,
-  auto-refresh, `isSupabaseConfigured` guard).
-- `lib/branding.ts` — `BRAND_NAME`, `getPatientBrand`, `DISCLOSURE_TEXT`.
-- `lib/format.ts` — money (integer cents) + patient/caregiver date formatting.
-- `lib/auth.tsx` — `AuthProvider` / `useAuth`, session lifecycle.
-- `lib/queries.ts` — RLS-scoped reads (patients, accounts, transactions,
-  pending deposits) + `pingBackend`. Row types mirror the web Drizzle schema.
-- `components/` — `Screen`, `DisclosureFooter`, `ui` (Button/Card/Notice/Loading).
-- Routing: `app/_layout.tsx`, `app/index.tsx`, `app/(auth)/` (sign-in).
-- Caregiver mode: `(caregiver)/_layout.tsx` (banner+gate), `patients.tsx`,
-  `patient/[id].tsx`, `diagnostics.tsx`.
-- Patient mode: `(patient)/_layout.tsx`, `view/[id]/accounts.tsx`,
-  `view/[id]/account/[accountId].tsx`.
-- Handoff system: this `docs/` tree, `scripts/re-anchor.{sh,ps1}`, `memory/`,
-  `CLAUDE.md`, `README.md`.
+M1 is functionally complete and the app is **public, deployed, and CI-green**.
+Remaining work is two deferred polish items (see "Exact next steps").
 
-## In progress
+## Done — foundation (session 1)
 
-- Nothing mid-edit.
+- Expo + expo-router + TypeScript scaffold; Supabase client on the shared
+  backend (publishable key, AsyncStorage, auto-refresh).
+- Caregiver sign-in; caregiver patient list + patient detail; patient bank view
+  (accounts + account detail) with the patient UX rules; always-on disclosure
+  footer; in-app **Diagnostics** backend test harness.
+- **Demo mode** (`lib/demo.ts`): explore the whole app on sample data, no
+  backend — powers the public web demo. "demo" wording is caregiver-side only.
+- Handoff/re-anchor system (docs specs/milestones/decisions, memory/, scripts).
 
-## Added this session (portfolio / distribution polish)
+## Done — polish & distribution (session 2)
 
-- **Demo mode** (`lib/demo.ts`): persisted flag + mock data; "Explore in demo
-  mode" on sign-in; `lib/queries.ts` short-circuits when active; AuthProvider
-  treats demo as authed; caregiver-only "· Demo data" banner. See ADR 0002.
-- **EAS** (`eas.json`) + `expo-dev-client` — development / preview (APK) /
-  production profiles.
-- **Web support** (`react-dom`, `react-native-web`, `@expo/metro-runtime`) +
-  `metro.config.js` stubbing `@opentelemetry/api` so the web bundle resolves.
-- **CI** (`.github/workflows/ci.yml`) — typecheck + lint on push/PR.
-- **ESLint 9 flat config** (`eslint.config.js`, `eslint-config-expo`); lint
-  script is now `eslint .`. Disabled only `react-hooks/set-state-in-effect`
-  (fetch-on-mount is intentional; no data lib per CLAUDE.md).
-- README: Try-it / Screenshots / Deploy-web-demo / Build-APK sections.
+- **Design synced to the web app** (ADR not added; see CLAUDE.md "Branding"):
+  brand primary → Tailwind **emerald-700**, near-white neutral surfaces,
+  web-matched radii; buttons darken + `scale 0.98` on press; phone-width
+  centered column so the web demo doesn't stretch on desktop. Hid the dev-only
+  "backend not configured" notice in production (`__DEV__` gate).
+- **Brand logo in-app** (`components/Brandmark.tsx`, react-native-svg): the
+  sun+wave mark + wordmark, copied verbatim from the web
+  `clearview-savings-icon.svg`. On sign-in, caregiver list, and patient nav bars.
+- **Brand image assets** (`assets/*.png` via `npm run assets` →
+  `scripts/generate-brand-assets.mjs`, sharp): launcher icon, Android adaptive
+  icon, splash, web favicon — reversed mark (white wave) on navy `#19293A`.
+  Wired into `app.json`.
+- **Shipped publicly:**
+  - GitHub (public): https://github.com/Talnerith/clearview-savings-mobile
+  - CI green (typecheck + lint) on every push.
+  - Live web demo: https://clearview-savings-mobile.vercel.app (Vercel,
+    auto-redeploys on push).
+  - APK release v0.1.0:
+    https://github.com/Talnerith/clearview-savings-mobile/releases/tag/v0.1.0
+  - EAS project linked: `@talnerith/clearview-savings-mobile`
+    (projectId in app.json).
 
 ## Verified this session
 
-- `npm install` + `npx expo install --fix` aligned versions to SDK 52
-  (async-storage 1.23.1, react-native 0.76.9); added `expo-asset`.
-- `npm run typecheck` — clean (exit 0).
-- `npm run lint` (`eslint .`) — clean (0 errors, 0 warnings).
-- `npx expo export` bundles clean on **ios**, **android**, and **web**
-  (web → deployable `index.html`).
+- `npm run typecheck` — clean. `npm run lint` (eslint 9 flat) — clean.
+- `npx expo export` builds clean on ios, android, web (favicon emitted).
+- CI green on the latest push.
 
-## Not started
+## Known issues / notes
 
-- First real run against the live Supabase project (needs `.env.local` filled
-  from the web app's keys, then `npm start` + sign in + Diagnostics).
-- Actually running an EAS build / deploying the web demo (needs a free Expo
-  account; config + commands are in README + eas.json).
-- Add real screenshots/GIF to the README (capture from demo mode).
-- Custom app icon/splash in `assets/` (Expo defaults for now).
-- iOS standalone distribution (needs paid Apple Developer account) — deferred.
+- **The v0.1.0 APK is stale**: it was built *before* the emerald design, the
+  in-app logo, and the brand icons. It works but looks like the old navy build.
+  Rebuild to refresh it (see next steps).
+- The Android `preview` EAS build must be run from a **real terminal** (not the
+  `!` runner), because the keystore prompt needs a TTY. First build already
+  generated/stored the keystore on EAS, so subsequent builds may not re-prompt.
+- `eas.json` `preview`/`production` profiles carry a `channel` field → `eas
+  build` may ask to set up EAS Update; answer **n** (we don't use OTA).
+- No automated tests yet; verification is typecheck + lint + manual.
 
-## Decisions made this session
+## Exact next steps (the two deferred open items)
 
-- **Expo + React Native** for "native mobile", to reuse the TS + Supabase stack
-  and get on-device testing via Expo Go (see ADR 0001).
-- **Both surfaces in one app**, patient view entered from caregiver mode — no
-  separate patient login, mirroring the web `getPatientForCaregiver` model.
-- **Read-first mobile**; balance-affecting writes stay in the web app to avoid
-  duplicating business logic (see ADR 0001 / CLAUDE.md).
-- **AsyncStorage** (not SecureStore) for session persistence — Supabase's
-  official RN guidance, and avoids the SecureStore value-size limit.
-- **Publishable key only**; no secret key in the bundle.
+1. **Rebuild the APK with the current code, then swap it into the v0.1.0
+   release** (link stays the same):
+   - In a real terminal in the project dir:
+     `eas build --platform android --profile preview` (answer **n** to EAS
+     Update, **y** to keystore if asked). ~15–40 min on free tier.
+   - Get the APK URL: `eas build:list --limit 1 --json` →
+     `artifacts.applicationArchiveUrl`; download it.
+   - Replace the release asset:
+     `gh release upload v0.1.0 <new.apk> --clobber`
+     (Claude can do the download + upload once the build finishes.)
 
-## Known issues / TODOs
+2. **Add screenshots** (capture from the live demo in demo mode, phone-shaped
+   via Chrome F12 → device toolbar → ⋮ → "Capture screenshot"). Save to
+   `assets/screenshots/` as `patient-accounts.png`, `diagnostics.png` (+ optional
+   `caregiver-patients.png`, `account-detail.png`, `sign-in.png`). Then
+   uncomment the image table in `README.md` "Screenshots" (snippet is in a
+   comment there) and push. See `assets/screenshots/README.md`.
 
-- Dependency versions in `package.json` are pinned to reasonable SDK 52 ranges
-  but were not resolver-verified in this session. If `npm install` complains,
-  run `npx expo install --fix`.
-- No automated tests yet; M1 verification is manual + typecheck.
-- `assets/` is empty — no custom icon/splash yet (Expo uses defaults).
+## Optional / later (not blocking)
 
-## Exact next step
-
-On a machine with the toolchain: `cd clearview-savings-mobile && npm install &&
-npm run typecheck`. Fix any version mismatches with `npx expo install --fix`.
-Then copy `.env.example` to `.env.local`, fill the two `EXPO_PUBLIC_*` values
-from the web app, run `npm start`, sign in as a caregiver, and open the
-Diagnostics screen to confirm the shared backend is reachable.
+- iOS standalone build (needs paid Apple Developer account).
+- Wire `EXPO_PUBLIC_SUPABASE_*` into Vercel if a live-backend (non-demo) web
+  sign-in is ever wanted — not required; demo mode covers viewing.
+- First real run against the live Supabase project (fill `.env.local` from the
+  web app's keys, `npm start`, sign in, open Diagnostics).
