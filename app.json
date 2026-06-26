@@ -27,6 +27,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "69f6c9ee-c8fa-424f-86c1-3ddf80fbe294"
+      }
+    },
+    "owner": "talnerith"
   }
 }
