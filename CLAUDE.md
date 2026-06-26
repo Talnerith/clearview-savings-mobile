@@ -124,8 +124,9 @@ app/                      expo-router routes
     view/[id]/account/[accountId].tsx
 lib/
   supabase.ts             shared-backend client (publishable key only)
-  auth.tsx                AuthProvider / useAuth (session lifecycle)
+  auth.tsx                AuthProvider / useAuth (session + demo lifecycle)
   queries.ts              RLS-scoped reads; types mirror the web schema
+  demo.ts                 demo-mode flag + mock data (no-backend exploration)
   branding.ts             BRAND_NAME, getPatientBrand, DISCLOSURE_TEXT
   format.ts               money (integer cents) + date formatting
   theme.ts                neutral palette + patient/caregiver type scales
@@ -143,6 +144,31 @@ round-trip (with latency), and token freshness. Use it to confirm the app is
 wired to the same backend as the web app without any external tooling. The
 probe lives in `pingBackend()` in `lib/queries.ts`.
 
+## Demo mode (`lib/demo.ts`)
+
+Demo mode lets the app be explored end-to-end with **built-in sample data and no
+backend** — used for the public web demo and screenshots. "Explore in demo mode"
+on the sign-in screen sets a persisted flag; `lib/queries.ts` short-circuits to
+`demoData` when `isDemoActive()`. The AuthProvider treats demo as a valid
+"authed" state (`authed = session || demo`), so the same gates and screens work.
+
+Rule that protects the patient illusion: the word **"demo" only ever appears on
+caregiver-side chrome** (sign-in hint, the caregiver banner's "· Demo data"
+suffix, the Diagnostics notice). Patient screens render the mock data exactly
+like real data — no "demo"/"sample" wording reaches a patient-visible surface.
+Keep it that way when adding to demo mode.
+
+## Build & deploy tooling
+
+- `eas.json` — EAS Build profiles: `development` (dev client), `preview`
+  (standalone APK to attach to a GitHub Release), `production` (store build).
+- `metro.config.js` — stubs `@opentelemetry/api` (an optional dynamic import in
+  `@supabase/supabase-js` we don't use) so the web bundle resolves. Add other
+  unused optional modules to the `STUBBED` set if a new dep needs it.
+- `.github/workflows/ci.yml` — runs typecheck + lint on push/PR.
+- Web export (`npx expo export --platform web`) produces a deployable static
+  site for the live demo (see README "Deploy a web demo").
+
 ## Coding standards
 
 - Strict TypeScript. No `any` without a comment.
@@ -156,9 +182,12 @@ probe lives in `pingBackend()` in `lib/queries.ts`.
 - `npm install` — install dependencies
 - `npm start` — Expo dev server (scan QR with Expo Go, or press i / a)
 - `npm run ios` / `npm run android` — open a simulator/emulator
+- `npm run web` — run in the browser
 - `npm run typecheck` — `tsc --noEmit`
-- `npm run lint` — `expo lint`
-- Run `npm run typecheck` before declaring a task done.
+- `npm run lint` — `eslint .` (flat config, `eslint-config-expo`)
+- Run `npm run typecheck && npm run lint` before declaring a task done.
+- `eas build --profile preview --platform android` — standalone APK (needs a
+  free Expo account).
 
 ## What NOT to do
 

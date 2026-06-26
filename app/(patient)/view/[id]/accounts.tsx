@@ -26,15 +26,16 @@ export default function PatientAccounts() {
   const [failed, setFailed] = useState(false);
 
   const load = useCallback(async () => {
-    setFailed(false);
     try {
       const [patient, accts] = await Promise.all([
         getPatient(id),
         listAccounts(id),
       ]);
+      const pendingRows = await listPendingDeposits(accts.map((a) => a.id));
       setSettings(patient?.settings);
       setAccounts(accts);
-      setPending(await listPendingDeposits(accts.map((a) => a.id)));
+      setPending(pendingRows);
+      setFailed(false);
     } catch {
       setFailed(true);
     }

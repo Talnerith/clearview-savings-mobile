@@ -1,3 +1,4 @@
+import { demoData, isDemoActive } from "@/lib/demo";
 import { supabase } from "@/lib/supabase";
 import type { PatientSettings } from "@/lib/format";
 
@@ -48,6 +49,7 @@ export type ScheduledDeposit = {
 };
 
 export async function listPatients(): Promise<Patient[]> {
+  if (isDemoActive()) return demoData.listPatients();
   const { data, error } = await supabase
     .from("patients")
     .select("id, display_name, settings, created_at")
@@ -57,6 +59,7 @@ export async function listPatients(): Promise<Patient[]> {
 }
 
 export async function getPatient(patientId: string): Promise<Patient | null> {
+  if (isDemoActive()) return demoData.getPatient(patientId);
   const { data, error } = await supabase
     .from("patients")
     .select("id, display_name, settings, created_at")
@@ -67,6 +70,7 @@ export async function getPatient(patientId: string): Promise<Patient | null> {
 }
 
 export async function listAccounts(patientId: string): Promise<Account[]> {
+  if (isDemoActive()) return demoData.listAccounts(patientId);
   const { data, error } = await supabase
     .from("accounts")
     .select("id, patient_id, name, type, balance_cents, created_at")
@@ -77,6 +81,7 @@ export async function listAccounts(patientId: string): Promise<Account[]> {
 }
 
 export async function getAccount(accountId: string): Promise<Account | null> {
+  if (isDemoActive()) return demoData.getAccount(accountId);
   const { data, error } = await supabase
     .from("accounts")
     .select("id, patient_id, name, type, balance_cents, created_at")
@@ -90,6 +95,7 @@ export async function listTransactions(
   accountId: string,
   limit = 50,
 ): Promise<Transaction[]> {
+  if (isDemoActive()) return demoData.listTransactions(accountId).slice(0, limit);
   const { data, error } = await supabase
     .from("transactions")
     .select("id, account_id, kind, amount_cents, label, posted_at, source")
@@ -107,6 +113,7 @@ export async function listPendingDeposits(
   accountIds: string[],
 ): Promise<ScheduledDeposit[]> {
   if (accountIds.length === 0) return [];
+  if (isDemoActive()) return demoData.listPendingDeposits(accountIds);
   const { data, error } = await supabase
     .from("scheduled_deposits")
     .select(
@@ -132,6 +139,14 @@ export async function pingBackend(): Promise<{
   patientCount: number;
   error: string | null;
 }> {
+  if (isDemoActive()) {
+    return {
+      ok: true,
+      ms: 0,
+      patientCount: demoData.listPatients().length,
+      error: null,
+    };
+  }
   const started = Date.now();
   const { count, error } = await supabase
     .from("patients")

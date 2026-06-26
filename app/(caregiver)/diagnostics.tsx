@@ -23,7 +23,7 @@ type CheckResult = {
 // session valid, and an RLS-scoped read returns data. This is the "way to
 // interact and test the backend in the app interface" — no external tooling.
 export default function Diagnostics() {
-  const { session } = useAuth();
+  const { session, demo } = useAuth();
   const [results, setResults] = useState<CheckResult[] | null>(null);
   const [running, setRunning] = useState(false);
 
@@ -31,23 +31,29 @@ export default function Diagnostics() {
     setRunning(true);
     const checks: CheckResult[] = [];
 
+    // In demo mode the env/auth checks are informational — there is no live
+    // backend to reach. The RLS read below resolves against sample data.
     // 1. Env configured
     checks.push({
       name: "Environment",
-      status: isSupabaseConfigured ? "pass" : "fail",
-      detail: isSupabaseConfigured
-        ? `URL ${supabaseUrlForDisplay}`
-        : "EXPO_PUBLIC_SUPABASE_* not set",
+      status: demo ? "info" : isSupabaseConfigured ? "pass" : "fail",
+      detail: demo
+        ? "Demo mode — no backend keys required"
+        : isSupabaseConfigured
+          ? `URL ${supabaseUrlForDisplay}`
+          : "EXPO_PUBLIC_SUPABASE_* not set",
     });
 
     // 2. Auth session present and not expired
     const { data: sess } = await supabase.auth.getSession();
     checks.push({
       name: "Auth session",
-      status: sess.session ? "pass" : "fail",
-      detail: sess.session
-        ? `Signed in as ${sess.session.user.email ?? sess.session.user.id}`
-        : "No active session",
+      status: demo ? "info" : sess.session ? "pass" : "fail",
+      detail: demo
+        ? "Demo mode — no real session"
+        : sess.session
+          ? `Signed in as ${sess.session.user.email ?? sess.session.user.id}`
+          : "No active session",
     });
 
     // 3. RLS-scoped read round-trip
@@ -85,11 +91,26 @@ export default function Diagnostics() {
         app, through the same Row-Level Security.
       </Text>
 
+      {demo ? (
+        <Notice>
+          Demo mode is on — checks run against built-in sample data, not a live
+          backend. Sign out and sign in to test the real connection.
+        </Notice>
+      ) : null}
+
       <Card>
+        <Row
+          label="Mode"
+          value={demo ? "Demo (sample data)" : "Live backend"}
+        />
         <Row label="Supabase URL" value={supabaseUrlForDisplay} />
         <Row
           label="Signed in"
-          value={session?.user.email ?? (session ? session.user.id : "no")}
+          value={
+            demo
+              ? "demo mode"
+              : (session?.user.email ?? (session ? session.user.id : "no"))
+          }
         />
       </Card>
 

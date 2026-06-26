@@ -14,11 +14,16 @@ import { colors, radius, space } from "@/lib/theme";
 // caregiver's authenticated session.
 export default function SignIn() {
   const router = useRouter();
-  const { signInWithPassword } = useAuth();
+  const { signInWithPassword, enterDemo } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  async function onExploreDemo() {
+    await enterDemo();
+    router.replace("/(caregiver)/patients");
+  }
 
   async function onSubmit() {
     setError(null);
@@ -81,6 +86,17 @@ export default function SignIn() {
       {error ? <Notice>{error}</Notice> : null}
 
       <Button label="Sign in" onPress={onSubmit} loading={busy} />
+
+      <View style={styles.demoBlock}>
+        <Text style={styles.demoHint}>
+          No account? Explore the app with sample data — no backend needed.
+        </Text>
+        <Button
+          label="Explore in demo mode"
+          variant="secondary"
+          onPress={onExploreDemo}
+        />
+      </View>
     </Screen>
   );
 }
@@ -101,4 +117,12 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: colors.text,
   },
+  demoBlock: {
+    marginTop: space.xl,
+    paddingTop: space.lg,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    gap: space.sm,
+  },
+  demoHint: { fontSize: 14, color: colors.textMuted, textAlign: "center" },
 });

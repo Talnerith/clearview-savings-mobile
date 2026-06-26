@@ -10,9 +10,9 @@ import { colors } from "@/lib/theme";
 // Patient UX rules enforced here and in the screens: large type, calm copy, one
 // primary action per screen, no modals/toasts, no auto-logout, never a raw 404.
 export default function PatientLayout() {
-  const { session, loading } = useAuth();
+  const { authed, loading } = useAuth();
   if (loading) return null;
-  if (!session) return <Redirect href="/(auth)/sign-in" />;
+  if (!authed) return <Redirect href="/(auth)/sign-in" />;
 
   return (
     <Stack

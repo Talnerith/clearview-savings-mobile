@@ -24,11 +24,11 @@ export default function PatientDetail() {
   const [confirmSwitch, setConfirmSwitch] = useState(false);
 
   const load = useCallback(async () => {
-    setError(null);
     try {
       const [p, a] = await Promise.all([getPatient(id), listAccounts(id)]);
       setPatient(p);
       setAccounts(a);
+      setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not load patient.");
     }

@@ -9,14 +9,16 @@ import { colors, space } from "@/lib/theme";
 // mode" indicator above the stack (CLAUDE.md: "Clear 'You are in caregiver
 // mode' indicator at all times").
 export default function CaregiverLayout() {
-  const { session, loading } = useAuth();
+  const { authed, demo, loading } = useAuth();
   if (loading) return null;
-  if (!session) return <Redirect href="/(auth)/sign-in" />;
+  if (!authed) return <Redirect href="/(auth)/sign-in" />;
 
   return (
     <View style={styles.root}>
       <SafeAreaView edges={["top"]} style={styles.bannerSafe}>
-        <Text style={styles.bannerText}>Caregiver mode</Text>
+        <Text style={styles.bannerText}>
+          Caregiver mode{demo ? " · Demo data" : ""}
+        </Text>
       </SafeAreaView>
       <View style={styles.body}>
         <Stack

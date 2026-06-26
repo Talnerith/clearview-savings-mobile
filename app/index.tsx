@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/auth";
 // their patient list (caregiver mode is the app's home — patient view is
 // entered from there, mirroring the web "switch to patient view" flow).
 export default function Index() {
-  const { session, loading } = useAuth();
+  const { authed, loading } = useAuth();
 
   if (loading) {
     return (
@@ -18,6 +18,6 @@ export default function Index() {
     );
   }
 
-  if (!session) return <Redirect href="/(auth)/sign-in" />;
+  if (!authed) return <Redirect href="/(auth)/sign-in" />;
   return <Redirect href="/(caregiver)/patients" />;
 }

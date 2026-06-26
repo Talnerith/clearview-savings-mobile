@@ -1,6 +1,6 @@
 import { Link, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Screen } from "@/components/Screen";
 import { Button, Card, Loading, Notice } from "@/components/ui";
@@ -11,15 +11,16 @@ import { colors, space } from "@/lib/theme";
 // Caregiver home: the list of patients this caregiver owns (RLS-scoped).
 export default function Patients() {
   const router = useRouter();
-  const { signOut } = useAuth();
+  const { signOut, demo } = useAuth();
   const [patients, setPatients] = useState<Patient[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const load = useCallback(async () => {
-    setError(null);
     try {
-      setPatients(await listPatients());
+      const rows = await listPatients();
+      setPatients(rows);
+      setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not load patients.");
     }
@@ -87,7 +88,11 @@ export default function Patients() {
           onPress={onRefresh}
           loading={refreshing}
         />
-        <Button label="Sign out" variant="secondary" onPress={signOut} />
+        <Button
+          label={demo ? "Exit demo" : "Sign out"}
+          variant="secondary"
+          onPress={signOut}
+        />
       </View>
     </Screen>
   );

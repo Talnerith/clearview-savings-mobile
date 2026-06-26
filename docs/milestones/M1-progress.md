@@ -29,21 +29,39 @@
 
 - Nothing mid-edit.
 
+## Added this session (portfolio / distribution polish)
+
+- **Demo mode** (`lib/demo.ts`): persisted flag + mock data; "Explore in demo
+  mode" on sign-in; `lib/queries.ts` short-circuits when active; AuthProvider
+  treats demo as authed; caregiver-only "· Demo data" banner. See ADR 0002.
+- **EAS** (`eas.json`) + `expo-dev-client` — development / preview (APK) /
+  production profiles.
+- **Web support** (`react-dom`, `react-native-web`, `@expo/metro-runtime`) +
+  `metro.config.js` stubbing `@opentelemetry/api` so the web bundle resolves.
+- **CI** (`.github/workflows/ci.yml`) — typecheck + lint on push/PR.
+- **ESLint 9 flat config** (`eslint.config.js`, `eslint-config-expo`); lint
+  script is now `eslint .`. Disabled only `react-hooks/set-state-in-effect`
+  (fetch-on-mount is intentional; no data lib per CLAUDE.md).
+- README: Try-it / Screenshots / Deploy-web-demo / Build-APK sections.
+
 ## Verified this session
 
-- `npm install` succeeded; `npx expo install --fix` aligned versions to SDK 52
-  (async-storage 1.23.1, react-native 0.76.9); added `expo-asset` (required by
-  the Metro config).
-- `npm run typecheck` passes clean (exit 0).
-- `npx expo export --platform ios` bundles the full route graph (969 modules,
-  exit 0) — all imports and routes resolve.
+- `npm install` + `npx expo install --fix` aligned versions to SDK 52
+  (async-storage 1.23.1, react-native 0.76.9); added `expo-asset`.
+- `npm run typecheck` — clean (exit 0).
+- `npm run lint` (`eslint .`) — clean (0 errors, 0 warnings).
+- `npx expo export` bundles clean on **ios**, **android**, and **web**
+  (web → deployable `index.html`).
 
 ## Not started
 
 - First real run against the live Supabase project (needs `.env.local` filled
   from the web app's keys, then `npm start` + sign in + Diagnostics).
-- EAS build/submit pipeline (out of scope for M1).
+- Actually running an EAS build / deploying the web demo (needs a free Expo
+  account; config + commands are in README + eas.json).
+- Add real screenshots/GIF to the README (capture from demo mode).
 - Custom app icon/splash in `assets/` (Expo defaults for now).
+- iOS standalone distribution (needs paid Apple Developer account) — deferred.
 
 ## Decisions made this session
 

@@ -31,7 +31,6 @@ export default function AccountDetail() {
   const [failed, setFailed] = useState(false);
 
   const load = useCallback(async () => {
-    setFailed(false);
     try {
       const [patient, acct, transactions] = await Promise.all([
         getPatient(id),
@@ -41,6 +40,7 @@ export default function AccountDetail() {
       setSettings(patient?.settings);
       setAccount(acct);
       setTxns(transactions);
+      setFailed(false);
     } catch {
       setFailed(true);
     }

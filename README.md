@@ -1,5 +1,8 @@
 # Clearview Savings — Mobile
 
+<!-- Replace OWNER/REPO with your GitHub path once pushed to enable the badge. -->
+<!-- [![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml) -->
+
 Native mobile companion (iOS + Android) for
 [Clearview Savings](../clearview-savings), built with Expo / React Native and
 TypeScript. It runs against the **same Supabase backend** as the web app — same
@@ -10,6 +13,26 @@ backend.
 > interface used in dementia care. It is not a real financial institution and
 > never handles real money. See [`CLAUDE.md`](./CLAUDE.md) for the full product
 > context and the rules this app must follow.
+
+## Try it
+
+- **Demo mode (no setup):** run the app and tap **"Explore in demo mode"** on
+  the sign-in screen — the whole app is explorable with built-in sample data, no
+  account or backend required.
+- **Live web demo:** _(add your deployed URL here — see [Deploy a web
+  demo](#deploy-a-web-demo))_.
+- **Android APK:** _(attach a build to a GitHub Release — see [Build an
+  installable app](#build-an-installable-app-eas))_.
+
+## Screenshots
+
+<!-- Add screenshots / a screen-recording GIF here. Capture from demo mode so no
+real data is shown. Suggested set: sign-in, patient list, patient detail,
+patient bank view, account detail, diagnostics. -->
+
+| Caregiver — patients | Patient — accounts | Diagnostics |
+| --- | --- | --- |
+| _add screenshot_ | _add screenshot_ | _add screenshot_ |
 
 ## Two surfaces in one app
 
@@ -51,8 +74,49 @@ wired to the same backend as the web app without any external tooling.
 | `npm start`         | Expo dev server                       |
 | `npm run ios`       | Open iOS simulator                    |
 | `npm run android`   | Open Android emulator                 |
+| `npm run web`       | Run in the browser                    |
 | `npm run typecheck` | `tsc --noEmit`                        |
-| `npm run lint`      | `expo lint`                           |
+| `npm run lint`      | `eslint .`                            |
+
+CI (`.github/workflows/ci.yml`) runs typecheck + lint on every push and PR.
+
+## Deploy a web demo
+
+Expo Router exports to a static site, so you can give reviewers a clickable URL.
+
+```bash
+npx expo export --platform web --output-dir dist
+```
+
+Deploy `dist/` to any static host. Easiest is Vercel or Netlify (they handle the
+single-page-app fallback automatically):
+
+```bash
+npx vercel deploy dist --prod        # or: npx netlify deploy --dir dist --prod
+```
+
+The deployed demo opens on the sign-in screen; **"Explore in demo mode"** then
+walks the full app on sample data — no backend needed. (To demo against the live
+backend instead, set `EXPO_PUBLIC_SUPABASE_*` at build time.)
+
+## Build an installable app (EAS)
+
+To produce a real, installable native binary you can attach to a GitHub Release:
+
+```bash
+npm i -g eas-cli
+eas login                            # free Expo account
+eas build --platform android --profile preview
+```
+
+The `preview` profile (see `eas.json`) outputs a standalone **APK**. Download it
+from the EAS build page and attach it to a GitHub Release so anyone can install
+it on an Android device. iOS distribution additionally requires an Apple
+Developer account ($99/yr) + TestFlight; `eas build --platform ios` builds it
+once that's set up.
+
+For day-to-day development with custom native modules, build a **development
+client** instead: `eas build --profile development`, then `npm start`.
 
 ## Multi-session workflow
 
