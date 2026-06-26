@@ -5,7 +5,21 @@ const expoConfig = require("eslint-config-expo/flat");
 module.exports = [
   ...expoConfig,
   {
-    ignores: ["dist/*", "dist-check/*", ".expo/*", "node_modules/*"],
+    ignores: ["dist/*", "dist-check/*", "dist-web-check/*", ".expo/*", "node_modules/*"],
+  },
+  {
+    // Node build/tooling scripts (not React Native app code) — allow Node globals.
+    files: ["scripts/**/*.mjs", "*.config.js"],
+    languageOptions: {
+      globals: {
+        Buffer: "readonly",
+        process: "readonly",
+        console: "readonly",
+        __dirname: "readonly",
+        require: "readonly",
+        module: "writable",
+      },
+    },
   },
   {
     rules: {

@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "scheme": "clearviewsavings",
     "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
@@ -14,16 +15,27 @@
     "android": {
       "package": "com.clearviewsavings.mobile",
       "adaptiveIcon": {
-        "backgroundColor": "#1f2a37"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#19293A"
       }
     },
     "web": {
       "bundler": "metro",
-      "output": "single"
+      "output": "single",
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router",
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#19293A"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

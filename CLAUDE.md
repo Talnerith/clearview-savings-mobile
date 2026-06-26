@@ -172,6 +172,18 @@ Keep it that way when adding to demo mode.
 - Web export (`npx expo export --platform web`) produces a deployable static
   site for the live demo (see README "Deploy a web demo").
 
+## Brand assets
+
+The in-app logo is `components/Brandmark.tsx` (the sun+wave mark via
+react-native-svg + the wordmark), copied verbatim from the web app's
+`clearview-savings-icon.svg` so it's pixel-identical. The launcher icon,
+Android adaptive icon, splash mark, and web favicon (`assets/*.png`) are
+generated from the same artwork by `npm run assets`
+(`scripts/generate-brand-assets.mjs`, uses sharp). Those use a **reversed mark
+on the navy brand background `#19293A`** — the mark's own navy wave is drawn
+white so it stays visible on navy. Regenerate with `npm run assets` if the
+artwork changes; don't hand-edit the PNGs.
+
 ## Coding standards
 
 - Strict TypeScript. No `any` without a comment.
