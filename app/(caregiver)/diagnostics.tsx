@@ -190,6 +190,6 @@ const styles = StyleSheet.create({
     color: colors.textInverse,
   },
   badgePass: { backgroundColor: colors.positive },
-  badgeFail: { backgroundColor: "#9b3b3b" },
+  badgeFail: { backgroundColor: colors.destructive },
   badgeInfo: { backgroundColor: colors.textMuted },
 });

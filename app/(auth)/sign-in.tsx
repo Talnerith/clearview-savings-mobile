@@ -48,7 +48,9 @@ export default function SignIn() {
         <Text style={styles.subtitle}>Caregiver sign in</Text>
       </View>
 
-      {!isSupabaseConfigured && (
+      {/* Developer hint only — never shown in a production/web-demo build, where
+          the path for a visitor is the "Explore in demo mode" button below. */}
+      {__DEV__ && !isSupabaseConfigured && (
         <Notice>
           Backend keys are not configured. Copy .env.example to .env.local and
           fill in the Supabase values from the web app.

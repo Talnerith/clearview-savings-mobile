@@ -1,36 +1,50 @@
-// Neutral palette per CLAUDE.md branding rules: greys, navy, soft greens, warm
-// beiges. Deliberately avoids palettes associated with real banks (TD green,
-// RBC blue/yellow, BMO blue, Scotiabank red, CIBC red/gold). The app must look
-// trustworthy and bank-like without impersonating any real institution.
+// Palette synced to the web app's design tokens (clearview-savings
+// app/globals.css). The web app's brand primary is Tailwind **emerald-700** —
+// "the same deep-emerald identity the patient bands use", per that file — on a
+// near-white neutral surface. Mirroring it here makes the mobile app read as the
+// same product, not a different one. Still satisfies CLAUDE.md (soft greens +
+// neutrals; no real-bank palette).
+//
+// Hex values are the Tailwind v4 fallbacks for the oklch tokens the web uses:
+//   emerald-700 #047857, emerald-800 #065f46, emerald-900 #064e3b,
+//   emerald-50 #ecfdf5, neutral-950 #0a0a0a, neutral-500 #737373,
+//   neutral-200 #e5e5e5, neutral-100 #f5f5f5, red-600 #dc2626.
 
 export const colors = {
-  // Surfaces
-  background: "#f7f5f1", // warm beige-grey, calm
+  // Surfaces — light neutral page, white cards (so cards lift off the page).
+  background: "#f5f5f5",
   surface: "#ffffff",
-  surfaceMuted: "#efece6",
+  surfaceMuted: "#f5f5f5",
 
   // Text
-  text: "#1f2a37", // near-navy ink
-  textMuted: "#5b6675",
-  textInverse: "#ffffff",
+  text: "#0a0a0a", // foreground (neutral-950)
+  textMuted: "#737373", // muted-foreground (neutral-500)
+  textInverse: "#fafafa", // primary-foreground (neutral-50)
 
-  // Brand / primary action — soft navy, not a real-bank blue
-  primary: "#26415e",
-  primaryPressed: "#1c3148",
+  // Brand / primary action — emerald-700, matching the web app.
+  primary: "#047857",
+  primaryPressed: "#065f46", // emerald-800, for the pressed state
 
-  // Positive / money-in — soft green
-  positive: "#3f7d5b",
-  positiveSoft: "#e6f0ea",
+  // Secondary (filled) button — neutral-100 / dark text, like web `secondary`.
+  secondary: "#f5f5f5",
+  secondaryPressed: "#e5e5e5",
+
+  // Positive / money-in — same emerald family.
+  positive: "#047857",
+  positiveSoft: "#ecfdf5", // emerald-50 band
 
   // Lines & borders
-  border: "#ddd8cf",
+  border: "#e5e5e5", // neutral-200
 
-  // Caregiver-mode accent banner (clearly "admin")
-  caregiverBanner: "#2d3b4d",
+  // Destructive (diagnostics FAIL badge, errors) — red-600.
+  destructive: "#dc2626",
 
-  // Calm, non-alarming notice (no harsh red for patient surfaces)
+  // Caregiver-mode banner — deep emerald, clearly "admin" but on-brand.
+  caregiverBanner: "#064e3b", // emerald-900
+
+  // Calm, non-alarming notice (warm amber, never harsh red on patient surfaces)
   notice: "#8a6d3b",
-  noticeSoft: "#f3ecdd",
+  noticeSoft: "#f5ecd9",
 } as const;
 
 // Patient surfaces must meet the strict UX rules: base font 18px minimum,
@@ -59,8 +73,10 @@ export const space = {
   xxl: 48,
 } as const;
 
+// Matches the web app's --radius (0.625rem = 10px) and its derived steps.
 export const radius = {
-  sm: 8,
-  md: 12,
-  lg: 16,
+  sm: 6,
+  md: 8,
+  lg: 10,
+  xl: 14, // shadcn Card radius
 } as const;

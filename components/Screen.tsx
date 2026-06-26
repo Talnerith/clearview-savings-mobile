@@ -37,6 +37,15 @@ export function Screen({
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
-  content: { padding: space.lg, gap: space.md },
+  content: {
+    padding: space.lg,
+    gap: space.md,
+    // Phone-width column, centered. On a phone this just fills the screen; on
+    // the web demo it keeps the layout looking like a mobile app instead of
+    // stretching inputs/buttons across the whole desktop window.
+    width: "100%",
+    maxWidth: 480,
+    alignSelf: "center",
+  },
   flex: { flex: 1 },
 });

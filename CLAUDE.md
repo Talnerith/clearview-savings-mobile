@@ -62,9 +62,12 @@ Hard rules (identical to the web app):
 
 - The brand must never contain "bank", "banking", or "banker".
 - Never visually or textually impersonate a real financial institution — not by
-  name, logo, or color palette. Use the neutral palette in `lib/theme.ts`
-  (greys, navy, soft greens, warm beiges). Avoid TD green, RBC blue/yellow, BMO
-  blue, Scotiabank red, CIBC red/gold.
+  name, logo, or color palette. `lib/theme.ts` is **synced to the web app's
+  design tokens** (`clearview-savings/app/globals.css`): brand primary is
+  Tailwind **emerald-700** on a near-white neutral surface, matching the web
+  caregiver/auth and patient-band identity so the two apps read as one product.
+  Keep them in sync — if the web tokens change, update `lib/theme.ts`. Avoid TD
+  green, RBC blue/yellow, BMO blue, Scotiabank red, CIBC red/gold.
 - The strings "Alzheimer", "dementia", "simulated", "fake", "demo",
   "therapeutic", or anything similar must **never** appear anywhere a patient
   can see — not in screen titles, headers, the navigation-bar title, error
