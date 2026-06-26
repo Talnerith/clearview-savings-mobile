@@ -1,0 +1,15 @@
+# Normalize line endings across platforms. Text files are stored with LF in the
+# repo; Git converts to the OS default on checkout.
+* text=auto eol=lf
+
+# Binary assets — never touch.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.hbc binary
