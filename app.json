@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Clearview Savings",
+    "slug": "clearview-savings-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "clearviewsavings",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.clearviewsavings.mobile"
+    },
+    "android": {
+      "package": "com.clearviewsavings.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#1f2a37"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
