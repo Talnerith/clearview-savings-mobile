@@ -2,10 +2,10 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
+import { Brandmark } from "@/components/Brandmark";
 import { Screen } from "@/components/Screen";
 import { Button, Notice } from "@/components/ui";
 import { useAuth } from "@/lib/auth";
-import { BRAND_NAME } from "@/lib/branding";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { colors, radius, space } from "@/lib/theme";
 
@@ -44,7 +44,7 @@ export default function SignIn() {
   return (
     <Screen>
       <View style={styles.header}>
-        <Text style={styles.brand}>{BRAND_NAME}</Text>
+        <Brandmark size="lg" />
         <Text style={styles.subtitle}>Caregiver sign in</Text>
       </View>
 
@@ -104,8 +104,7 @@ export default function SignIn() {
 }
 
 const styles = StyleSheet.create({
-  header: { gap: space.xs, marginBottom: space.md, marginTop: space.lg },
-  brand: { fontSize: 32, fontWeight: "700", color: colors.primary },
+  header: { gap: space.sm, marginBottom: space.md, marginTop: space.lg },
   subtitle: { fontSize: 16, color: colors.textMuted },
   field: { gap: space.xs },
   label: { fontSize: 14, color: colors.textMuted, fontWeight: "600" },

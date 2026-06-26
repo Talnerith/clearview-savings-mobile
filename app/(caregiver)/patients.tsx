@@ -2,6 +2,7 @@ import { Link, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { Brandmark } from "@/components/Brandmark";
 import { Screen } from "@/components/Screen";
 import { Button, Card, Loading, Notice } from "@/components/ui";
 import { useAuth } from "@/lib/auth";
@@ -50,6 +51,8 @@ export default function Patients() {
       // RefreshControl needs to live on the ScrollView; Screen forwards children
       // only, so we re-create a simple refreshable layout here via the list.
     >
+      <Brandmark size="sm" />
+
       <View style={styles.topRow}>
         <Text style={styles.title}>Your patients</Text>
         <Link href="/(caregiver)/diagnostics" style={styles.diagLink}>

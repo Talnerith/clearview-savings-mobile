@@ -2,6 +2,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { Brandmark } from "@/components/Brandmark";
 import { Screen } from "@/components/Screen";
 import { Loading } from "@/components/ui";
 import { BRAND_NAME } from "@/lib/branding";
@@ -60,7 +61,8 @@ export default function PatientAccounts() {
           // Browser/tab-equivalent title is patient-visible — must read like a
           // real bank, never "demo"/"simulation".
           title: `${BRAND_NAME} — Your Accounts`,
-          headerTitle: BRAND_NAME,
+          // The nav bar shows the brand logo lockup (mark + wordmark).
+          headerTitle: () => <Brandmark size="sm" />,
         }}
       />
       <Screen contentStyle={{ gap: space.lg }}>

@@ -2,6 +2,7 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+import { Brandmark } from "@/components/Brandmark";
 import { Screen } from "@/components/Screen";
 import { Loading } from "@/components/ui";
 import { BRAND_NAME } from "@/lib/branding";
@@ -61,7 +62,10 @@ export default function AccountDetail() {
   return (
     <>
       <Stack.Screen
-        options={{ title: account?.name ?? BRAND_NAME, headerTitle: BRAND_NAME }}
+        options={{
+          title: account?.name ?? BRAND_NAME,
+          headerTitle: () => <Brandmark size="sm" />,
+        }}
       />
       <Screen contentStyle={{ gap: space.lg }}>
         <View style={styles.summary}>
