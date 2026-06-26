@@ -1,7 +1,6 @@
 # Clearview Savings — Mobile
 
-<!-- Replace OWNER/REPO with your GitHub path once pushed to enable the badge. -->
-<!-- [![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml) -->
+[![CI](https://github.com/Talnerith/clearview-savings-mobile/actions/workflows/ci.yml/badge.svg)](https://github.com/Talnerith/clearview-savings-mobile/actions/workflows/ci.yml)
 
 Native mobile companion (iOS + Android) for
 [Clearview Savings](../clearview-savings), built with Expo / React Native and
@@ -26,13 +25,16 @@ backend.
 
 ## Screenshots
 
-<!-- Add screenshots / a screen-recording GIF here. Capture from demo mode so no
-real data is shown. Suggested set: sign-in, patient list, patient detail,
-patient bank view, account detail, diagnostics. -->
+Captured from demo mode (no real data). See
+[`assets/screenshots/`](./assets/screenshots/) for how to add/update these.
 
 | Caregiver — patients | Patient — accounts | Diagnostics |
 | --- | --- | --- |
-| _add screenshot_ | _add screenshot_ | _add screenshot_ |
+| ![Caregiver patient list](./assets/screenshots/caregiver-patients.png) | ![Patient accounts](./assets/screenshots/patient-accounts.png) | ![Backend diagnostics](./assets/screenshots/diagnostics.png) |
+
+| Sign in (+ demo) | Patient — account detail |
+| --- | --- |
+| ![Sign in](./assets/screenshots/sign-in.png) | ![Account detail](./assets/screenshots/account-detail.png) |
 
 ## Two surfaces in one app
 
