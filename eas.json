@@ -4,7 +4,6 @@
     "appVersionSource": "remote"
   },
   "build": {
-    "//": "Three profiles. 'development' = a dev client (Metro-connected, for day-to-day work). 'preview' = a standalone APK you can install and hand to anyone — this is the build to attach to a GitHub Release. 'production' = store-ready (app bundle).",
     "development": {
       "developmentClient": true,
       "distribution": "internal"
