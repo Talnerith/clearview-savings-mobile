@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 
 import { CaregiverActions } from "@/components/CaregiverActions";
 import { HeaderBack } from "@/components/HeaderBack";
@@ -40,18 +40,23 @@ export default function PatientDetail() {
     load();
   }, [load]);
 
-  // Always-available return to the patient list (the default header chevron is
-  // absent on a direct URL / refresh).
+  // Always-available return to the patient list. Native already renders a
+  // working back chevron (tap + swipe); only the web build needs a custom one
+  // (the default chevron is absent on a direct URL / refresh). Overriding
+  // headerLeft on native broke its back button.
   function goBack() {
     if (router.canGoBack()) router.back();
     else router.replace("/(caregiver)/patients");
   }
-  const headerLeft = () => <HeaderBack onPress={goBack} />;
+  const screenOptions =
+    Platform.OS === "web"
+      ? { headerLeft: () => <HeaderBack onPress={goBack} /> }
+      : {};
 
   if (!patient && !error) {
     return (
       <>
-        <Stack.Screen options={{ headerLeft }} />
+        <Stack.Screen options={screenOptions} />
         <Screen scroll={false}>
           <Loading label="Loading…" />
         </Screen>
@@ -61,7 +66,7 @@ export default function PatientDetail() {
 
   return (
     <Screen contentStyle={{ paddingBottom: space.xl }}>
-      <Stack.Screen options={{ headerLeft }} />
+      <Stack.Screen options={screenOptions} />
       {error ? <Notice>{error}</Notice> : null}
 
       {patient ? (

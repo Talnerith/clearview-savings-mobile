@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Platform, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { Brandmark } from "@/components/Brandmark";
 import { HeaderBack } from "@/components/HeaderBack";
@@ -84,7 +84,10 @@ export default function Deposit() {
         options={{
           title: `${BRAND_NAME} — Deposit a Check`,
           headerTitle: () => <Brandmark size="sm" />,
-          headerLeft: () => <HeaderBack onPress={goBack} />,
+          // Web-only custom back; native uses its working default chevron.
+          ...(Platform.OS === "web"
+            ? { headerLeft: () => <HeaderBack onPress={goBack} /> }
+            : null),
         }}
       />
       <Screen contentStyle={{ gap: space.lg }}>

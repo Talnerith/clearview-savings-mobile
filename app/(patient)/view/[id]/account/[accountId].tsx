@@ -1,11 +1,11 @@
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 
 import { Brandmark } from "@/components/Brandmark";
 import { HeaderBack } from "@/components/HeaderBack";
 import { Screen } from "@/components/Screen";
-import { Loading } from "@/components/ui";
+import { Button, Loading } from "@/components/ui";
 import { BRAND_NAME } from "@/lib/branding";
 import {
   formatMoney,
@@ -65,10 +65,15 @@ export default function AccountDetail() {
     load();
   }, [load]);
 
+  // Native stacks already render a working back chevron (tap + swipe); only the
+  // web build needs a custom one (the default chevron is absent on direct-URL /
+  // refresh). Overriding headerLeft on native broke its back button.
   const headerOptions = {
     title: account?.name ?? BRAND_NAME,
     headerTitle: () => <Brandmark size="sm" />,
-    headerLeft: () => <HeaderBack onPress={goBack} />,
+    ...(Platform.OS === "web"
+      ? { headerLeft: () => <HeaderBack onPress={goBack} /> }
+      : null),
   };
 
   if (!loaded) {
@@ -93,6 +98,7 @@ export default function AccountDetail() {
           <Text style={styles.calm}>
             Please go back to your accounts and try again.
           </Text>
+          <Button label="Back to your accounts" onPress={goBack} />
         </Screen>
       </>
     );
