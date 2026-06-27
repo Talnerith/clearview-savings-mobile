@@ -150,6 +150,32 @@ export async function listScheduledDeposits(
   return (data ?? []) as ScheduledDeposit[];
 }
 
+export type AuditEntry = {
+  id: string;
+  action_kind: string;
+  target_kind: string;
+  note: string | null;
+  created_at: string;
+};
+
+// Caregiver audit log for one patient (most recent first). RLS scopes rows to
+// the caregiver's own actions; requires `grant select on audit_log` (see the
+// web app's supabase/policies.sql).
+export async function listAuditLog(
+  patientId: string,
+  limit = 50,
+): Promise<AuditEntry[]> {
+  if (isDemoActive()) return demoData.listAuditLog();
+  const { data, error } = await supabase
+    .from("audit_log")
+    .select("id, action_kind, target_kind, note, created_at")
+    .eq("patient_id", patientId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as AuditEntry[];
+}
+
 // A lightweight connectivity probe used by the Diagnostics screen. Returns the
 // round-trip latency and whether the authenticated read succeeded under RLS.
 export async function pingBackend(): Promise<{

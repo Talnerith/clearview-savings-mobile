@@ -101,6 +101,14 @@ export default function PatientDetail() {
         <PatientSettingsForm patient={patient} onChanged={load} />
       ) : null}
 
+      <View style={styles.auditBlock}>
+        <Button
+          label="View audit log"
+          variant="secondary"
+          onPress={() => router.push(`/(caregiver)/audit/${id}`)}
+        />
+      </View>
+
       <View style={styles.switchBlock}>
         {confirmSwitch ? (
           <>
@@ -133,5 +141,6 @@ export default function PatientDetail() {
 const styles = StyleSheet.create({
   header: { marginBottom: space.sm },
   name: { fontSize: 24, fontWeight: "700", color: colors.text },
+  auditBlock: { marginTop: space.lg },
   switchBlock: { gap: space.sm, marginTop: space.lg },
 });

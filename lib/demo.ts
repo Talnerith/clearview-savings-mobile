@@ -186,4 +186,27 @@ export const demoData = {
     PENDING.filter((d) => accountIds.includes(d.account_id)),
   listScheduledDeposits: (accountIds: string[]): ScheduledDeposit[] =>
     PENDING.filter((d) => accountIds.includes(d.account_id)),
+  listAuditLog: () => [
+    {
+      id: "demo-al1",
+      action_kind: "transaction_created",
+      target_kind: "transaction",
+      note: null,
+      created_at: "2026-06-22T13:00:00.000Z",
+    },
+    {
+      id: "demo-al2",
+      action_kind: "scheduled_deposit_created",
+      target_kind: "scheduled_deposit",
+      note: null,
+      created_at: "2026-06-01T09:00:00.000Z",
+    },
+    {
+      id: "demo-al3",
+      action_kind: "patient_created",
+      target_kind: "patient",
+      note: null,
+      created_at: "2026-01-04T00:00:00.000Z",
+    },
+  ],
 };

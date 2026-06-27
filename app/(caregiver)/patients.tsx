@@ -3,10 +3,10 @@ import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Brandmark } from "@/components/Brandmark";
+import { LegalLinks } from "@/components/LegalLinks";
 import { Screen } from "@/components/Screen";
 import { Button, Card, Loading, Notice, TextField } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
-import { useAuth } from "@/lib/auth";
 import { isDemoActive } from "@/lib/demo";
 import { listPatients, type Patient } from "@/lib/queries";
 import { colors, space } from "@/lib/theme";
@@ -14,7 +14,6 @@ import { colors, space } from "@/lib/theme";
 // Caregiver home: the list of patients this caregiver owns (RLS-scoped).
 export default function Patients() {
   const router = useRouter();
-  const { signOut, demo } = useAuth();
   const [patients, setPatients] = useState<Patient[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -136,12 +135,9 @@ export default function Patients() {
           onPress={onRefresh}
           loading={refreshing}
         />
-        <Button
-          label={demo ? "Exit demo" : "Sign out"}
-          variant="secondary"
-          onPress={signOut}
-        />
       </View>
+
+      <LegalLinks />
     </Screen>
   );
 }
