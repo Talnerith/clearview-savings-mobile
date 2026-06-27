@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+import { CaregiverActions } from "@/components/CaregiverActions";
 import { Screen } from "@/components/Screen";
 import { Button, Card, Loading, Notice } from "@/components/ui";
 import { formatMoney } from "@/lib/format";
@@ -71,6 +72,14 @@ export default function PatientDetail() {
           </Text>
         </Card>
       ))}
+
+      {accounts && accounts.length > 0 ? (
+        <CaregiverActions
+          patientId={id}
+          accounts={accounts}
+          onDone={load}
+        />
+      ) : null}
 
       <View style={styles.switchBlock}>
         {confirmSwitch ? (

@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Brandmark } from "@/components/Brandmark";
 import { Screen } from "@/components/Screen";
-import { Loading } from "@/components/ui";
+import { Button, Loading } from "@/components/ui";
 import { BRAND_NAME } from "@/lib/branding";
 import { formatMoney, type PatientSettings } from "@/lib/format";
 import {
@@ -99,6 +99,13 @@ export default function PatientAccounts() {
             </Text>
           </Pressable>
         ))}
+
+        {accounts && accounts.length > 0 ? (
+          <Button
+            label="Deposit a Check"
+            onPress={() => router.push(`/(patient)/view/${id}/deposit`)}
+          />
+        ) : null}
       </Screen>
     </>
   );

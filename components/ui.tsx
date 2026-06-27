@@ -4,6 +4,8 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TextInput,
+  type KeyboardTypeOptions,
   View,
 } from "react-native";
 
@@ -80,6 +82,75 @@ export function Loading({ label }: { label?: string }) {
   );
 }
 
+// Labeled text input — caregiver-side forms (standard density). Patient screens
+// use their own large-type styling; this is for the admin surface.
+export function TextField({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  keyboardType,
+  autoCapitalize = "sentences",
+  maxLength,
+}: {
+  label: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder?: string;
+  keyboardType?: KeyboardTypeOptions;
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
+  maxLength?: number;
+}) {
+  return (
+    <View style={styles.fieldBlock}>
+      <Text style={styles.fieldLabel}>{label}</Text>
+      <TextInput
+        style={styles.fieldInput}
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        placeholderTextColor={colors.textMuted}
+        keyboardType={keyboardType}
+        autoCapitalize={autoCapitalize}
+        maxLength={maxLength}
+      />
+    </View>
+  );
+}
+
+// A single-select row of chips. Generic over the option value so callers stay
+// type-safe (kinds, account ids, etc.).
+export function ChipGroup<T extends string>({
+  options,
+  value,
+  onChange,
+}: {
+  options: { label: string; value: T }[];
+  value: T | null;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <View style={styles.chipRow}>
+      {options.map((opt) => {
+        const selected = opt.value === value;
+        return (
+          <Pressable
+            key={opt.value}
+            onPress={() => onChange(opt.value)}
+            style={[styles.chip, selected && styles.chipSelected]}
+          >
+            <Text
+              style={[styles.chipLabel, selected && styles.chipLabelSelected]}
+            >
+              {opt.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   button: {
     minHeight: 52,
@@ -123,4 +194,31 @@ const styles = StyleSheet.create({
   noticeText: { color: colors.notice, fontSize: 15 },
   loading: { padding: space.xl, alignItems: "center", gap: space.sm },
   loadingLabel: { color: colors.textMuted },
+  fieldBlock: { gap: space.xs },
+  fieldLabel: { fontSize: 14, color: colors.textMuted, fontWeight: "600" },
+  fieldInput: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    paddingHorizontal: space.md,
+    paddingVertical: space.md,
+    fontSize: 17,
+    color: colors.text,
+  },
+  chipRow: { flexDirection: "row", flexWrap: "wrap", gap: space.xs },
+  chip: {
+    paddingHorizontal: space.md,
+    paddingVertical: space.sm,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  chipSelected: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  chipLabel: { fontSize: 15, color: colors.text, fontWeight: "600" },
+  chipLabelSelected: { color: colors.textInverse },
 });
