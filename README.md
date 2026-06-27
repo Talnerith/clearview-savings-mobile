@@ -25,16 +25,17 @@ backend.
 ## Screenshots
 
 The quickest way to see the app is the
-[live demo](https://clearview-savings-mobile.vercel.app) above. Static
-screenshots (captured from demo mode, no real data) live in
-[`assets/screenshots/`](./assets/screenshots/) — see that folder's README for
-how to add them.
+[live demo](https://clearview-savings-mobile.vercel.app) above. The screenshots
+below are captured from demo mode (sample data, no real backend) and live in
+[`assets/screenshots/`](./assets/screenshots/).
 
-<!-- Once screenshots are added to assets/screenshots/, embed them here, e.g.:
-| Patient — accounts | Diagnostics |
+| Sign in | Caregiver — your patients |
 | --- | --- |
-| ![Patient accounts](./assets/screenshots/patient-accounts.png) | ![Backend diagnostics](./assets/screenshots/diagnostics.png) |
--->
+| ![Sign in](./assets/screenshots/sign-in.png) | ![Caregiver patient list](./assets/screenshots/caregiver-patients.png) |
+| **Patient — Your Accounts** | **Account — Recent Transactions** |
+| ![Patient accounts](./assets/screenshots/patient-accounts.png) | ![Account detail with recent transactions](./assets/screenshots/account-detail.png) |
+| **Backend diagnostics** | |
+| ![Backend diagnostics screen](./assets/screenshots/diagnostics.png) | |
 
 
 ## Two surfaces in one app
