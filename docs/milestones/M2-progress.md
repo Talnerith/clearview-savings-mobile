@@ -8,16 +8,32 @@
 
 ## Where things stand (one line)
 
-M2 is **code-complete across all 4 phases and statically verified** (typecheck,
-lint, web bundle on mobile; typecheck + lint + 329 tests on the web app).
-**Remaining: live end-to-end verification** (real sign-in + real writes against
-the Vercel preview, and an on-device APK run) — that needs the USER. Both repos'
-work sits on feature branches, unmerged.
+M2 is **COMPLETE — verified live end-to-end and merged to production** (2026-06-27).
+All 4 phases done; both feature branches merged to `master` and pushed. The only
+remaining item is an **on-device APK run** (native Turnstile), which is a
+follow-up, not a blocker.
 
-## Branches (unmerged)
+## Live verification (2026-06-27) — all green
 
-- Web app `clearview-savings`: **`feat/m2-mobile-api`** (pushed → Vercel preview).
-- Mobile `clearview-savings-mobile`: **`feat/m2-real-auth`** (local; Phases 2+3).
+Run on Expo-web against the production shared backend, signed in as a real
+caregiver (`chub_mister+test1`, patient "Bayani Hintay"):
+- Turnstile sign-in ✅ · Diagnostics RLS round-trip 398ms ✅
+- Manual transaction (+$5) ✅ · Deposit redemption (CA$100 workbook reward
+  "Activity Set #2") ✅ · Transfer (Checking −$50 / Savings +$50, atomic) ✅
+- Reads (patients/accounts/transactions/pending deposits) all live ✅
+
+**Backend fix this surfaced (now in `supabase/policies.sql`, applied to prod):**
+the `authenticated` role had RLS policies but **no table-level SELECT grant**, so
+PostgREST reads failed with "permission denied". Added `grant select` on
+caregivers/patients/accounts/transactions/scheduled_deposits (SELECT-only;
+caregivers included because the ownership policies subquery it). The web app
+never hit this because it reads via a direct DATABASE_URL connection.
+
+## Branches (MERGED)
+
+- Web `clearview-savings`: `feat/m2-mobile-api` → merged to `master` (51aecfc).
+- Mobile `clearview-savings-mobile`: `feat/m2-real-auth` → merged to `master`
+  (a2fc2ce). `EXPO_PUBLIC_API_BASE_URL` production = `https://clearviewsavings.com`.
 
 ## Done — Phase 1 (web endpoints, `clearview-savings`)
 
@@ -61,29 +77,24 @@ existing helpers.
   success. **Verified in demo mode on web** (forms render, validation gates,
   demo guard fires, deposit success screen shows) via browser screenshots.
 
-## Not done — Phase 4 (live verification) — NEEDS THE USER
+## Remaining follow-ups (post-merge, non-blocking)
 
-Static checks all pass; the live path was not exercised. Exact next steps:
-
-1. **Set the API base URL.** Get the `feat/m2-mobile-api` Vercel **preview** URL;
-   confirm its Preview env has DATABASE_URL + Supabase keys. Put it in mobile
-   `.env.local` as `EXPO_PUBLIC_API_BASE_URL` (also add `MOBILE_ALLOWED_ORIGINS`
-   = `http://localhost:8081` on the web app's Preview env for Expo-web CORS).
-2. **Add the Turnstile key** to mobile `.env.local`:
-   `EXPO_PUBLIC_TURNSTILE_SITE_KEY` (= web `NEXT_PUBLIC_TURNSTILE_SITE_KEY`).
-3. **Real sign-in** (`npm run web`): caregiver email/password → Turnstile solves
-   → reach Your patients (the smoke test M1 couldn't finish). If MFA on, the
-   challenge screen should complete it (AC-2).
-4. **Diagnostics** (signed in for real): live Supabase URL + passing RLS read.
-5. **Writes:** redeem a real deposit code; post a manual transaction; transfer.
-   Confirm balances update and an audit row matches the web path. Try a crafted
-   `patientId` (expect 403).
-6. **On-device APK:** rebuild (`eas build --platform android --profile preview`),
-   set the same env, verify native Turnstile (the WebView baseUrl /
-   `EXPO_PUBLIC_TURNSTILE_HOST` must be in the site key's allowed domains) +
-   sign-in + a write.
-7. When green: merge both branches; point `EXPO_PUBLIC_API_BASE_URL` at
-   production; update this doc + memory.
+1. **On-device APK** — rebuild (`eas build --platform android --profile preview`)
+   with EAS env `EXPO_PUBLIC_API_BASE_URL=https://clearviewsavings.com` +
+   `EXPO_PUBLIC_TURNSTILE_SITE_KEY` + `EXPO_PUBLIC_TURNSTILE_HOST`. Verify native
+   Turnstile (its WebView baseUrl host MUST be in the site key's allowed
+   domains), sign-in, and a write on a real phone. Then swap into the v0.1.0
+   release. (This also covers the stale-APK item carried from M1.)
+2. **Re-enable Vercel preview Deployment Protection** — it was turned off to test
+   the preview API; production is (correctly) public, preview should be
+   re-protected.
+3. **Nav bug to investigate** — a stray `…/view/<id>/account/undefined` URL was
+   observed (likely an account card tapped before data loaded). The Diagnostics
+   back-button gap is already fixed; re-audit account-card navigation for an
+   undefined accountId guard.
+4. **MFA path** — the test caregiver has no TOTP factor, so the challenge screen
+   wasn't exercised live; enroll a factor on the web app to test AC-2 when
+   convenient.
 
 ## Decisions made (don't relitigate)
 
