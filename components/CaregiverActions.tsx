@@ -7,7 +7,7 @@ import { isDemoActive } from "@/lib/demo";
 import type { Account } from "@/lib/queries";
 import { colors, space } from "@/lib/theme";
 
-type Mode = "none" | "txn" | "transfer";
+type Mode = "none" | "txn" | "transfer" | "account";
 
 const AMOUNT_RE = /^\d+(\.\d{1,2})?$/;
 
@@ -32,6 +32,7 @@ export function CaregiverActions({
   onDone: () => void;
 }) {
   const [mode, setMode] = useState<Mode>("none");
+  const hasSavings = accounts.some((a) => a.type === "savings");
 
   if (accounts.length === 0) return null;
 
@@ -53,6 +54,13 @@ export function CaregiverActions({
               onPress={() => setMode("transfer")}
             />
           ) : null}
+          {!hasSavings ? (
+            <Button
+              label="Add savings account"
+              variant="secondary"
+              onPress={() => setMode("account")}
+            />
+          ) : null}
         </View>
       ) : null}
 
@@ -69,6 +77,14 @@ export function CaregiverActions({
         <TransferForm
           patientId={patientId}
           accounts={accounts}
+          onClose={() => setMode("none")}
+          onDone={onDone}
+        />
+      ) : null}
+
+      {mode === "account" ? (
+        <AddAccountForm
+          patientId={patientId}
           onClose={() => setMode("none")}
           onDone={onDone}
         />
@@ -268,6 +284,54 @@ function TransferForm({
       {error ? <Notice>{error}</Notice> : null}
 
       <Button label="Transfer" onPress={submit} loading={busy} disabled={!valid} />
+      <Button label="Cancel" variant="secondary" onPress={onClose} />
+    </View>
+  );
+}
+
+function AddAccountForm({
+  patientId,
+  onClose,
+  onDone,
+}: {
+  patientId: string;
+  onClose: () => void;
+  onDone: () => void;
+}) {
+  const [name, setName] = useState("Savings");
+  const [starting, setStarting] = useState("");
+
+  const { busy, error, done, submit } = useSubmit(async () => {
+    await api.addAccount(patientId, name.trim(), starting.trim() || "0");
+    onDone();
+  });
+
+  const valid =
+    name.trim().length > 0 &&
+    (starting.trim() === "" || AMOUNT_RE.test(starting.trim()));
+
+  if (done) {
+    return (
+      <View style={styles.form}>
+        <Notice>Savings account added.</Notice>
+        <Button label="Done" variant="secondary" onPress={onClose} />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.form}>
+      <Text style={styles.formTitle}>Add savings account</Text>
+      <TextField label="Name" value={name} onChangeText={setName} maxLength={40} />
+      <TextField
+        label="Starting balance (optional)"
+        value={starting}
+        onChangeText={setStarting}
+        keyboardType="decimal-pad"
+        placeholder="0.00"
+      />
+      {error ? <Notice>{error}</Notice> : null}
+      <Button label="Add account" onPress={submit} loading={busy} disabled={!valid} />
       <Button label="Cancel" variant="secondary" onPress={onClose} />
     </View>
   );

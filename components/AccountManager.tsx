@@ -8,11 +8,10 @@ import { listTransactions, type Account, type Transaction } from "@/lib/queries"
 import { useWrite } from "@/lib/use-write";
 import { colors, space } from "@/lib/theme";
 
-const AMOUNT_RE = /^\d+(\.\d{1,2})?$/;
-
 // Caregiver accounts section: each account shows its balance + recent
-// transactions inline (matching the web caregiver view) and a rename control;
-// if the patient has no savings account yet, an "Add savings account" form.
+// transactions inline (matching the web caregiver view) and a rename control.
+// Adding a savings account is a caregiver action (see CaregiverActions), not
+// inline here.
 export function AccountManager({
   patientId,
   accounts,
@@ -24,8 +23,6 @@ export function AccountManager({
   settings?: PatientSettings;
   onChanged: () => void;
 }) {
-  const hasSavings = accounts.some((a) => a.type === "savings");
-
   return (
     <View style={styles.wrap}>
       <Text style={styles.sectionLabel}>Accounts</Text>
@@ -38,9 +35,6 @@ export function AccountManager({
           onChanged={onChanged}
         />
       ))}
-      {!hasSavings ? (
-        <AddSavingsForm patientId={patientId} onChanged={onChanged} />
-      ) : null}
     </View>
   );
 }
@@ -148,64 +142,6 @@ function AccountRow({
   );
 }
 
-function AddSavingsForm({
-  patientId,
-  onChanged,
-}: {
-  patientId: string;
-  onChanged: () => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const [name, setName] = useState("Savings");
-  const [starting, setStarting] = useState("");
-  const { busy, error, run } = useWrite();
-
-  async function onSubmit() {
-    const ok = await run(async () => {
-      await api.addAccount(patientId, name.trim(), starting.trim() || "0");
-    });
-    if (ok) {
-      setOpen(false);
-      setStarting("");
-      onChanged();
-    }
-  }
-
-  const validStarting = starting.trim() === "" || AMOUNT_RE.test(starting.trim());
-
-  if (!open) {
-    return (
-      <Button
-        label="Add savings account"
-        variant="secondary"
-        onPress={() => setOpen(true)}
-      />
-    );
-  }
-
-  return (
-    <Card>
-      <Text style={styles.formTitle}>Add savings account</Text>
-      <TextField label="Name" value={name} onChangeText={setName} maxLength={40} />
-      <TextField
-        label="Starting balance (optional)"
-        value={starting}
-        onChangeText={setStarting}
-        keyboardType="decimal-pad"
-        placeholder="0.00"
-      />
-      {error ? <Notice>{error}</Notice> : null}
-      <Button
-        label="Add account"
-        onPress={onSubmit}
-        loading={busy}
-        disabled={!name.trim() || !validStarting}
-      />
-      <Button label="Cancel" variant="secondary" onPress={() => setOpen(false)} />
-    </Card>
-  );
-}
-
 const styles = StyleSheet.create({
   wrap: { gap: space.sm },
   sectionLabel: {
@@ -241,5 +177,4 @@ const styles = StyleSheet.create({
   debit: { color: colors.text },
   renameRow: { gap: space.sm, marginTop: space.xs },
   renameButtons: { gap: space.xs },
-  formTitle: { fontSize: 16, fontWeight: "700", color: colors.text },
 });
