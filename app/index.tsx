@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/auth";
 // their patient list (caregiver mode is the app's home — patient view is
 // entered from there, mirroring the web "switch to patient view" flow).
 export default function Index() {
-  const { authed, loading } = useAuth();
+  const { authed, needsMfa, loading } = useAuth();
 
   if (loading) {
     return (
@@ -18,6 +18,8 @@ export default function Index() {
     );
   }
 
+  // A persisted session that still owes an MFA step-up resumes at the challenge.
+  if (needsMfa) return <Redirect href="/(auth)/challenge" />;
   if (!authed) return <Redirect href="/(auth)/sign-in" />;
   return <Redirect href="/(caregiver)/patients" />;
 }

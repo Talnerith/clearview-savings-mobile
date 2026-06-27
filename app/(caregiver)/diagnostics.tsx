@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -23,9 +24,19 @@ type CheckResult = {
 // session valid, and an RLS-scoped read returns data. This is the "way to
 // interact and test the backend in the app interface" — no external tooling.
 export default function Diagnostics() {
+  const router = useRouter();
   const { session, demo } = useAuth();
   const [results, setResults] = useState<CheckResult[] | null>(null);
   const [running, setRunning] = useState(false);
+
+  // Explicit return path. The stack header has a back chevron, but this screen
+  // is a utility a caregiver reaches mid-task; a clear button is easier to find
+  // (and on web the header affordance is subtle). Fall back to a hard nav if
+  // there's no history (e.g. opened via a deep link).
+  function goBack() {
+    if (router.canGoBack()) router.back();
+    else router.replace("/(caregiver)/patients");
+  }
 
   async function runChecks() {
     setRunning(true);
@@ -142,6 +153,14 @@ export default function Diagnostics() {
           that you are signed in.
         </Notice>
       ) : null}
+
+      <View style={styles.backBlock}>
+        <Button
+          label="Back to patients"
+          variant="secondary"
+          onPress={goBack}
+        />
+      </View>
     </Screen>
   );
 }
@@ -192,4 +211,5 @@ const styles = StyleSheet.create({
   badgePass: { backgroundColor: colors.positive },
   badgeFail: { backgroundColor: colors.destructive },
   badgeInfo: { backgroundColor: colors.textMuted },
+  backBlock: { marginTop: space.md },
 });

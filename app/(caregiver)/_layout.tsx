@@ -9,8 +9,9 @@ import { colors, space } from "@/lib/theme";
 // mode" indicator above the stack (CLAUDE.md: "Clear 'You are in caregiver
 // mode' indicator at all times").
 export default function CaregiverLayout() {
-  const { authed, demo, loading } = useAuth();
+  const { authed, demo, needsMfa, loading } = useAuth();
   if (loading) return null;
+  if (needsMfa) return <Redirect href="/(auth)/challenge" />;
   if (!authed) return <Redirect href="/(auth)/sign-in" />;
 
   return (
