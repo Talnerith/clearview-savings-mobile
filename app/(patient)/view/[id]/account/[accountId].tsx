@@ -1,8 +1,9 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { Brandmark } from "@/components/Brandmark";
+import { HeaderBack } from "@/components/HeaderBack";
 import { Screen } from "@/components/Screen";
 import { Loading } from "@/components/ui";
 import { BRAND_NAME } from "@/lib/branding";
@@ -26,10 +27,21 @@ export default function AccountDetail() {
     id: string;
     accountId: string;
   }>();
+  const router = useRouter();
   const [account, setAccount] = useState<Account | null>(null);
   const [txns, setTxns] = useState<Transaction[] | null>(null);
   const [settings, setSettings] = useState<PatientSettings | undefined>();
   const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  // Always-available return path: pop if we have history, else go to the
+  // patient's accounts home (covers direct-URL / refresh, where the stack's
+  // default back chevron is absent — the dead-end behind the /account/undefined
+  // trap).
+  function goBack() {
+    if (router.canGoBack()) router.back();
+    else router.replace(`/(patient)/view/${id}/accounts`);
+  }
 
   const load = useCallback(async () => {
     try {
@@ -44,6 +56,8 @@ export default function AccountDetail() {
       setFailed(false);
     } catch {
       setFailed(true);
+    } finally {
+      setLoaded(true);
     }
   }, [id, accountId]);
 
@@ -51,22 +65,42 @@ export default function AccountDetail() {
     load();
   }, [load]);
 
-  if (account === null && !failed) {
+  const headerOptions = {
+    title: account?.name ?? BRAND_NAME,
+    headerTitle: () => <Brandmark size="sm" />,
+    headerLeft: () => <HeaderBack onPress={goBack} />,
+  };
+
+  if (!loaded) {
     return (
-      <Screen scroll={false}>
-        <Loading />
-      </Screen>
+      <>
+        <Stack.Screen options={headerOptions} />
+        <Screen scroll={false}>
+          <Loading />
+        </Screen>
+      </>
+    );
+  }
+
+  // Account couldn't be loaded (not found / bad id / read failure). Show a calm
+  // message with a clear way back, never a misleading $0.00 dead-end.
+  if (failed || !account) {
+    return (
+      <>
+        <Stack.Screen options={headerOptions} />
+        <Screen contentStyle={{ gap: space.lg }}>
+          <Text style={styles.sectionTitle}>We couldn&apos;t find that account</Text>
+          <Text style={styles.calm}>
+            Please go back to your accounts and try again.
+          </Text>
+        </Screen>
+      </>
     );
   }
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: account?.name ?? BRAND_NAME,
-          headerTitle: () => <Brandmark size="sm" />,
-        }}
-      />
+      <Stack.Screen options={headerOptions} />
       <Screen contentStyle={{ gap: space.lg }}>
         <View style={styles.summary}>
           <Text style={styles.accountName}>{account?.name}</Text>
@@ -77,13 +111,6 @@ export default function AccountDetail() {
         </View>
 
         <Text style={styles.sectionTitle}>Recent Transactions</Text>
-
-        {failed ? (
-          <Text style={styles.calm}>
-            We&apos;re getting your recent activity ready. Please check again in
-            a moment.
-          </Text>
-        ) : null}
 
         {txns?.length === 0 ? (
           <Text style={styles.calm}>No recent transactions.</Text>

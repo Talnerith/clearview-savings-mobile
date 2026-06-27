@@ -1,8 +1,9 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { CaregiverActions } from "@/components/CaregiverActions";
+import { HeaderBack } from "@/components/HeaderBack";
 import { Screen } from "@/components/Screen";
 import { Button, Card, Loading, Notice } from "@/components/ui";
 import { formatMoney } from "@/lib/format";
@@ -39,16 +40,28 @@ export default function PatientDetail() {
     load();
   }, [load]);
 
+  // Always-available return to the patient list (the default header chevron is
+  // absent on a direct URL / refresh).
+  function goBack() {
+    if (router.canGoBack()) router.back();
+    else router.replace("/(caregiver)/patients");
+  }
+  const headerLeft = () => <HeaderBack onPress={goBack} />;
+
   if (!patient && !error) {
     return (
-      <Screen scroll={false}>
-        <Loading label="Loading…" />
-      </Screen>
+      <>
+        <Stack.Screen options={{ headerLeft }} />
+        <Screen scroll={false}>
+          <Loading label="Loading…" />
+        </Screen>
+      </>
     );
   }
 
   return (
     <Screen contentStyle={{ paddingBottom: space.xl }}>
+      <Stack.Screen options={{ headerLeft }} />
       {error ? <Notice>{error}</Notice> : null}
 
       {patient ? (

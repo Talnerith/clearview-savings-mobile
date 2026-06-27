@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 import { Brandmark } from "@/components/Brandmark";
+import { HeaderBack } from "@/components/HeaderBack";
 import { Screen } from "@/components/Screen";
 import { Button } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
@@ -33,6 +34,11 @@ export default function Deposit() {
       .then((p) => setSettings(p?.settings))
       .catch(() => {});
   }, [id]);
+
+  function goBack() {
+    if (router.canGoBack()) router.back();
+    else router.replace(`/(patient)/view/${id}/accounts`);
+  }
 
   function onChangeCode(text: string) {
     // Keep only code-alphabet characters, upper-case, max 8 (the print shows it
@@ -78,6 +84,7 @@ export default function Deposit() {
         options={{
           title: `${BRAND_NAME} — Deposit a Check`,
           headerTitle: () => <Brandmark size="sm" />,
+          headerLeft: () => <HeaderBack onPress={goBack} />,
         }}
       />
       <Screen contentStyle={{ gap: space.lg }}>
