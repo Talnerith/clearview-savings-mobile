@@ -149,6 +149,40 @@ export type TransferInput = {
   amount: string;
 };
 
+export type OkResult = { ok: true };
+
+export type AddPatientResult = {
+  ok: true;
+  patient: { id: string; display_name: string };
+};
+
+export type AddAccountResult = {
+  ok: true;
+  account: {
+    id: string;
+    name: string;
+    type: "checking" | "savings";
+    balance_cents: number;
+  };
+};
+
+export type ScheduledDepositInput = {
+  patientId: string;
+  accountId: string;
+  label: string;
+  amount: string; // dollars string
+  frequency: "weekly" | "biweekly" | "monthly";
+  anchorDate: string; // YYYY-MM-DD
+  pendingDays: number;
+};
+
+export type PatientSettingsInput = {
+  patientId: string;
+  displayName: string;
+  fontSize: "lg" | "xl" | "2xl";
+  locale: string;
+};
+
 export const api = {
   redeemDeposit: (patientId: string, code: string) =>
     postJson<RedeemResult>("/api/m/deposit/redeem", { patientId, code }),
@@ -156,4 +190,35 @@ export const api = {
     postJson<ManualTxnResult>("/api/m/transactions/manual", input),
   transfer: (input: TransferInput) =>
     postJson<TransferResult>("/api/m/transfers", input),
+
+  // M3 caregiver writes
+  addPatient: (displayName: string) =>
+    postJson<AddPatientResult>("/api/m/patients", { displayName }),
+  addAccount: (patientId: string, name: string, startingBalance: string) =>
+    postJson<AddAccountResult>("/api/m/accounts", {
+      patientId,
+      name,
+      startingBalance,
+    }),
+  renameAccount: (patientId: string, accountId: string, name: string) =>
+    postJson<OkResult>("/api/m/accounts/rename", { patientId, accountId, name }),
+  addScheduledDeposit: (input: ScheduledDepositInput) =>
+    postJson<{ ok: true; id: string }>("/api/m/scheduled-deposits", input),
+  toggleScheduledDeposit: (
+    patientId: string,
+    depositId: string,
+    active: boolean,
+  ) =>
+    postJson<OkResult>("/api/m/scheduled-deposits/toggle", {
+      patientId,
+      depositId,
+      active,
+    }),
+  deleteScheduledDeposit: (patientId: string, depositId: string) =>
+    postJson<OkResult>("/api/m/scheduled-deposits/delete", {
+      patientId,
+      depositId,
+    }),
+  updatePatientSettings: (input: PatientSettingsInput) =>
+    postJson<OkResult>("/api/m/patient-settings", input),
 };

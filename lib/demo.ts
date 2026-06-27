@@ -184,4 +184,6 @@ export const demoData = {
     TRANSACTIONS[accountId] ?? [],
   listPendingDeposits: (accountIds: string[]): ScheduledDeposit[] =>
     PENDING.filter((d) => accountIds.includes(d.account_id)),
+  listScheduledDeposits: (accountIds: string[]): ScheduledDeposit[] =>
+    PENDING.filter((d) => accountIds.includes(d.account_id)),
 };

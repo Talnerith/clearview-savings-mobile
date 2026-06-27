@@ -4,8 +4,10 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Brandmark } from "@/components/Brandmark";
 import { Screen } from "@/components/Screen";
-import { Button, Card, Loading, Notice } from "@/components/ui";
+import { Button, Card, Loading, Notice, TextField } from "@/components/ui";
+import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { isDemoActive } from "@/lib/demo";
 import { listPatients, type Patient } from "@/lib/queries";
 import { colors, space } from "@/lib/theme";
 
@@ -16,6 +18,9 @@ export default function Patients() {
   const [patients, setPatients] = useState<Patient[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [addBusy, setAddBusy] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -36,6 +41,30 @@ export default function Patients() {
     await load();
     setRefreshing(false);
   }, [load]);
+
+  async function onAddPatient() {
+    setAddError(null);
+    if (!newName.trim()) {
+      setAddError("Enter the patient's name.");
+      return;
+    }
+    if (isDemoActive()) {
+      setAddError("Demo mode — changes aren’t saved.");
+      return;
+    }
+    setAddBusy(true);
+    try {
+      await api.addPatient(newName.trim());
+      setNewName("");
+      await load();
+    } catch (e) {
+      setAddError(
+        e instanceof ApiError ? e.message : "Could not add the patient.",
+      );
+    } finally {
+      setAddBusy(false);
+    }
+  }
 
   if (patients === null && !error) {
     return (
@@ -84,6 +113,22 @@ export default function Patients() {
         </Pressable>
       ))}
 
+      <View style={styles.addBlock}>
+        <Text style={styles.addTitle}>Add a patient</Text>
+        <Text style={styles.addHint}>
+          Use the name they’ll see at the top of their accounts.
+        </Text>
+        <TextField
+          label="Patient name"
+          value={newName}
+          onChangeText={setNewName}
+          placeholder="e.g. Margaret Smith"
+          maxLength={80}
+        />
+        {addError ? <Notice>{addError}</Notice> : null}
+        <Button label="Add patient" onPress={onAddPatient} loading={addBusy} />
+      </View>
+
       <View style={styles.footerActions}>
         <Button
           label="Refresh"
@@ -111,5 +156,14 @@ const styles = StyleSheet.create({
   diagLink: { color: colors.primary, fontWeight: "600" },
   name: { fontSize: 18, fontWeight: "600", color: colors.text },
   meta: { fontSize: 13, color: colors.textMuted },
+  addBlock: {
+    gap: space.sm,
+    marginTop: space.lg,
+    paddingTop: space.lg,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  addTitle: { fontSize: 16, fontWeight: "700", color: colors.text },
+  addHint: { fontSize: 14, color: colors.textMuted },
   footerActions: { gap: space.sm, marginTop: space.md },
 });

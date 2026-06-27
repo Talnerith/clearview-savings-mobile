@@ -2,11 +2,13 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 
+import { AccountManager } from "@/components/AccountManager";
 import { CaregiverActions } from "@/components/CaregiverActions";
 import { HeaderBack } from "@/components/HeaderBack";
+import { PatientSettingsForm } from "@/components/PatientSettingsForm";
+import { ScheduledDeposits } from "@/components/ScheduledDeposits";
 import { Screen } from "@/components/Screen";
-import { Button, Card, Loading, Notice } from "@/components/ui";
-import { formatMoney } from "@/lib/format";
+import { Button, Loading, Notice } from "@/components/ui";
 import {
   getPatient,
   listAccounts,
@@ -75,28 +77,28 @@ export default function PatientDetail() {
         </View>
       ) : null}
 
-      <Text style={styles.sectionLabel}>Accounts</Text>
-      {accounts?.length === 0 ? (
-        <Notice>This patient has no accounts yet.</Notice>
-      ) : null}
-      {accounts?.map((a) => (
-        <Card key={a.id}>
-          <Text style={styles.accountName}>{a.name}</Text>
-          <Text style={styles.accountType}>
-            {a.type === "checking" ? "Checking" : "Savings"}
-          </Text>
-          <Text style={styles.balance}>
-            {formatMoney(a.balance_cents, patient?.settings)}
-          </Text>
-        </Card>
-      ))}
-
       {accounts && accounts.length > 0 ? (
-        <CaregiverActions
-          patientId={id}
-          accounts={accounts}
-          onDone={load}
-        />
+        <>
+          <AccountManager
+            patientId={id}
+            accounts={accounts}
+            settings={patient?.settings}
+            onChanged={load}
+          />
+          <ScheduledDeposits
+            patientId={id}
+            accounts={accounts}
+            settings={patient?.settings}
+            onChanged={load}
+          />
+          <CaregiverActions patientId={id} accounts={accounts} onDone={load} />
+        </>
+      ) : (
+        <Notice>This patient has no accounts yet.</Notice>
+      )}
+
+      {patient ? (
+        <PatientSettingsForm patient={patient} onChanged={load} />
       ) : null}
 
       <View style={styles.switchBlock}>
@@ -131,15 +133,5 @@ export default function PatientDetail() {
 const styles = StyleSheet.create({
   header: { marginBottom: space.sm },
   name: { fontSize: 24, fontWeight: "700", color: colors.text },
-  sectionLabel: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: colors.textMuted,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  accountName: { fontSize: 18, fontWeight: "600", color: colors.text },
-  accountType: { fontSize: 13, color: colors.textMuted },
-  balance: { fontSize: 26, fontWeight: "700", color: colors.text },
   switchBlock: { gap: space.sm, marginTop: space.lg },
 });

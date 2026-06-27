@@ -131,6 +131,25 @@ export async function listPendingDeposits(
   });
 }
 
+// All scheduled deposits across the patient's accounts (active + paused), for
+// the caregiver management view. listPendingDeposits (above) is the patient-side
+// "Direct Deposit Pending" subset; this is the full list with status.
+export async function listScheduledDeposits(
+  accountIds: string[],
+): Promise<ScheduledDeposit[]> {
+  if (accountIds.length === 0) return [];
+  if (isDemoActive()) return demoData.listScheduledDeposits(accountIds);
+  const { data, error } = await supabase
+    .from("scheduled_deposits")
+    .select(
+      "id, account_id, label, amount_cents, frequency, next_run_at, pending_days, active",
+    )
+    .in("account_id", accountIds)
+    .order("next_run_at", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as ScheduledDeposit[];
+}
+
 // A lightweight connectivity probe used by the Diagnostics screen. Returns the
 // round-trip latency and whether the authenticated read succeeded under RLS.
 export async function pingBackend(): Promise<{
