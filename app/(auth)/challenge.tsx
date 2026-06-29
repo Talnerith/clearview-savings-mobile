@@ -61,6 +61,7 @@ export default function Challenge() {
           keyboardType="number-pad"
           textContentType="oneTimeCode"
           autoComplete="one-time-code"
+          autoFocus
           placeholder="123456"
           placeholderTextColor={colors.textMuted}
           maxLength={6}

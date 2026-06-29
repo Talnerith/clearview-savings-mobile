@@ -232,7 +232,7 @@ function AddDepositForm({
         maxLength={10}
       />
       <TextField
-        label="Show as pending N days before (0–14)"
+        label="Show as pending how many days before? (0–14)"
         value={pendingDays}
         onChangeText={(t) => setPendingDays(t.replace(/\D/g, "").slice(0, 2))}
         keyboardType="number-pad"

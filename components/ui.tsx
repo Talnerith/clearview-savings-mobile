@@ -23,11 +23,14 @@ export function Button({
 }: {
   label: string;
   onPress: () => void;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "destructive";
   disabled?: boolean;
   loading?: boolean;
 }) {
-  const isPrimary = variant === "primary";
+  const isSecondary = variant === "secondary";
+  // Primary and destructive are both solid fills with light text; only the
+  // background colour differs, so they share label/indicator styling.
+  const isSolid = !isSecondary;
   return (
     <Pressable
       accessibilityRole="button"
@@ -37,20 +40,23 @@ export function Button({
       // (active:scale-[0.98]) so every tap visibly reacts.
       style={({ pressed }) => [
         styles.button,
-        isPrimary ? styles.buttonPrimary : styles.buttonSecondary,
-        pressed &&
-          (isPrimary ? styles.buttonPrimaryPressed : styles.buttonSecondaryPressed),
+        variant === "primary" && styles.buttonPrimary,
+        variant === "secondary" && styles.buttonSecondary,
+        variant === "destructive" && styles.buttonDestructive,
+        pressed && variant === "primary" && styles.buttonPrimaryPressed,
+        pressed && variant === "secondary" && styles.buttonSecondaryPressed,
+        pressed && variant === "destructive" && styles.buttonDestructivePressed,
         pressed && styles.buttonPressedScale,
         (disabled || loading) && styles.buttonDisabled,
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={isPrimary ? colors.textInverse : colors.text} />
+        <ActivityIndicator color={isSolid ? colors.textInverse : colors.text} />
       ) : (
         <Text
           style={[
             styles.buttonLabel,
-            isPrimary ? styles.buttonLabelPrimary : styles.buttonLabelSecondary,
+            isSolid ? styles.buttonLabelPrimary : styles.buttonLabelSecondary,
           ]}
         >
           {label}
@@ -167,6 +173,8 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   buttonSecondaryPressed: { backgroundColor: colors.secondaryPressed },
+  buttonDestructive: { backgroundColor: colors.destructive },
+  buttonDestructivePressed: { backgroundColor: "#b91c1c" }, // red-700
   buttonPressedScale: { transform: [{ scale: 0.98 }] },
   buttonDisabled: { opacity: 0.5 },
   buttonLabel: { fontSize: 18, fontWeight: "600" },

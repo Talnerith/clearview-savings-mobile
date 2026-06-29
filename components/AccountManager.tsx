@@ -17,11 +17,16 @@ export function AccountManager({
   accounts,
   settings,
   onChanged,
+  refreshKey,
 }: {
   patientId: string;
   accounts: Account[];
   settings?: PatientSettings;
   onChanged: () => void;
+  // Bumped by the parent after any write (e.g. a manual transaction). The inline
+  // recent-transactions list is fetched here per account, so it needs this
+  // signal to refetch — otherwise it shows stale rows until the screen remounts.
+  refreshKey: number;
 }) {
   return (
     <View style={styles.wrap}>
@@ -33,6 +38,7 @@ export function AccountManager({
           account={a}
           settings={settings}
           onChanged={onChanged}
+          refreshKey={refreshKey}
         />
       ))}
     </View>
@@ -44,11 +50,13 @@ function AccountRow({
   account,
   settings,
   onChanged,
+  refreshKey,
 }: {
   patientId: string;
   account: Account;
   settings?: PatientSettings;
   onChanged: () => void;
+  refreshKey: number;
 }) {
   const [txns, setTxns] = useState<Transaction[]>([]);
   const [renaming, setRenaming] = useState(false);
@@ -65,7 +73,7 @@ function AccountRow({
 
   useEffect(() => {
     loadTxns();
-  }, [loadTxns]);
+  }, [loadTxns, refreshKey]);
 
   async function onSaveName() {
     const ok = await run(async () => {

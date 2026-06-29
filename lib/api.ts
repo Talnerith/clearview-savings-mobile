@@ -194,6 +194,8 @@ export const api = {
   // M3 caregiver writes
   addPatient: (displayName: string) =>
     postJson<AddPatientResult>("/api/m/patients", { displayName }),
+  deletePatient: (patientId: string) =>
+    postJson<OkResult>("/api/m/patients/delete", { patientId }),
   addAccount: (patientId: string, name: string, startingBalance: string) =>
     postJson<AddAccountResult>("/api/m/accounts", {
       patientId,
