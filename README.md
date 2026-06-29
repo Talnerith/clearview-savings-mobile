@@ -139,3 +139,10 @@ This project carries the same handoff/re-anchor system as the web app:
 ## Project layout
 
 See the "Project layout" section in [`CLAUDE.md`](./CLAUDE.md).
+
+## License
+
+Source-available, all rights reserved. The code is public for viewing and
+evaluation (e.g. by prospective employers); it is **not** licensed for
+redistribution, production use, or derivative services. See [`LICENSE`](./LICENSE)
+for the full terms.

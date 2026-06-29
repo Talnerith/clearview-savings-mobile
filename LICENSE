@@ -1,0 +1,30 @@
+Copyright (c) 2026 Bayani Hintay. All rights reserved.
+
+This source code is made publicly available for viewing, reference, and
+evaluation only — for example, by prospective employers or collaborators
+reviewing the author's work.
+
+You MAY:
+  - View and read the source code in this repository.
+  - Clone the repository for the sole purpose of running it locally to
+    evaluate it.
+
+You MAY NOT, without prior written permission from the copyright holder:
+  - Use this software, in whole or in part, in any production or public
+    deployment.
+  - Redistribute, republish, sublicense, or sell the software or any
+    substantial portion of it.
+  - Create or operate a derivative product or service based on it.
+
+This software simulates a banking interface as a therapeutic aid in dementia
+care. It is not a real financial institution and must never be deployed or
+presented as one. The redistribution restrictions above exist in part to
+prevent misuse of the simulated-banking interface.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
