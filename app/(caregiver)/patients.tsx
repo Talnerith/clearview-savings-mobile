@@ -1,5 +1,5 @@
-import { Link, useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { Link, useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Brandmark } from "@/components/Brandmark";
@@ -31,9 +31,14 @@ export default function Patients() {
     }
   }, []);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  // Reload whenever the screen regains focus (initial mount + every return from
+  // a patient detail), so adds/deletes made there are reflected without a manual
+  // Refresh — and a just-deleted patient never lingers in the list.
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load]),
+  );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

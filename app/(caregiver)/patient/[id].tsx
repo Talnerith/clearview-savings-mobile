@@ -38,6 +38,15 @@ export default function PatientDetail() {
   const load = useCallback(async () => {
     try {
       const [p, a] = await Promise.all([getPatient(id), listAccounts(id)]);
+      if (!p) {
+        // The patient row is gone (just deleted, or never owned under RLS).
+        // Surface a calm message instead of spinning on the loading state
+        // forever (getPatient returns null, not an error, for a missing id).
+        setPatient(null);
+        setAccounts([]);
+        setError("This patient is no longer available.");
+        return;
+      }
       setPatient(p);
       setAccounts(a);
       setError(null);
@@ -56,7 +65,10 @@ export default function PatientDetail() {
     setDeleteBusy(true);
     try {
       await api.deletePatient(id);
-      router.replace("/(caregiver)/patients");
+      // Pop back to the existing patients screen (which refreshes on focus), so
+      // we don't stack a duplicate that leaves a stray back button and a stale,
+      // still-listed patient behind it.
+      goBack();
     } catch (e) {
       setDeleteError(
         e instanceof ApiError ? e.message : "Could not delete the patient.",
@@ -88,6 +100,22 @@ export default function PatientDetail() {
         <Stack.Screen options={screenOptions} />
         <Screen scroll={false}>
           <Loading label="Loading…" />
+        </Screen>
+      </>
+    );
+  }
+
+  // Patient missing or failed to load: a calm message + a way back, never an
+  // endless spinner or a half-rendered detail screen.
+  if (!patient) {
+    return (
+      <>
+        <Stack.Screen options={screenOptions} />
+        <Screen scroll={false}>
+          <Notice>{error ?? "This patient is no longer available."}</Notice>
+          <View style={styles.switchBlock}>
+            <Button label="Back to patients" onPress={goBack} />
+          </View>
         </Screen>
       </>
     );
