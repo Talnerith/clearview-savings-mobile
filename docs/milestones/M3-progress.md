@@ -1,15 +1,16 @@
 # M3 — Progress / Handoff
 
 > Read CLAUDE.md → docs/specs/M3.md → docs/milestones/M3.md → this file, then
-> inspect the files. Last updated: 2026-06-27.
+> inspect the files. Last updated: 2026-06-29.
 > Quick re-anchor: `pwsh scripts/re-anchor.ps1`.
 
 ## Where things stand (one line)
 
-M3 is **code-complete across all 3 phases, statically verified, and merged to
-`master` on both repos.** Remaining: **one DB grant to apply** (audit_log), then
-an on-device APK rebuild + smoke test (the user batches changes and builds at
-the end).
+M3 is **CLOSED (2026-06-29)** — all 3 phases shipped on both repos, the
+`audit_log` grant is applied to production, and the features were smoke-tested
+live (localhost web against the production backend). A small **post-M3 follow-up**
+(delete-patient + UX fixes) also shipped this session — see the section at the
+bottom.
 
 ## Done — Phase 1 (caregiver writes)
 
@@ -47,26 +48,55 @@ action. Verified in demo on web.
 - Add-savings-account is a caregiver action, not inline in the accounts section
   (new patients have just Checking).
 
-## REMAINING — must do before the audit log works
+## DONE — close-out (2026-06-29)
 
-**Apply the audit_log grant** to the shared Supabase DB (the screen reads it via
-PostgREST; without the grant it shows "permission denied"). In the Supabase SQL
-editor run:
-```sql
-grant select on public.audit_log to authenticated;
-```
-(Already captured in `clearview-savings/supabase/policies.sql`.) RLS
-(`audit_log_owner`) scopes rows to the caregiver's own actions.
+- **audit_log grant applied** to the shared Supabase DB
+  (`grant select on public.audit_log to authenticated;`, captured in
+  `clearview-savings/supabase/policies.sql`). Audit-log screen now reads under
+  RLS (`audit_log_owner`).
+- **Smoke-tested live** on localhost web (`npm run web`) against the production
+  backend (Turnstile + API CORS already allow localhost). All M3 features
+  verified working.
 
-## REMAINING — verification
+## Post-M3 follow-up (2026-06-29 session)
 
-On-device APK rebuild (`eas build --platform android --profile preview`) +
-smoke-test the M3 features. Real-write testing in a browser/Pixel-8 view is
-fastest on **localhost** (`npm run web`) since Turnstile + API CORS already allow
-localhost; the Vercel mobile URL would need its origin added to Turnstile + to
-`MOBILE_ALLOWED_ORIGINS` + the mobile Vercel env.
+Ad-hoc bug-fix + small-feature pass on top of M3 (no separate spec — routine
+fixes + one feature following the existing M2/M3 shared-endpoint pattern).
+Shipped and smoke-tested live across both repos:
 
-## M4 candidates (not in M3)
+**Delete a patient** (new caregiver action, cross-repo):
+- Web: `lib/patients/delete-patient.ts` (ownership-scoped helper, audits
+  `patient_deleted`, cascade removes accounts/transactions/scheduled
+  deposits/codes) + co-located pg-mem test; `POST /api/m/patients/delete`
+  (`requireApiPatient`); thin `deletePatientAction`; red "Delete patient" button
+  (`ConfirmingForm`) on the patient detail header; "Patient deleted." dashboard
+  status. New `audit_action_kind` enum value `patient_deleted`
+  (migration `drizzle/0006_worried_scorpion.sql`) — **applied to production**.
+- Mobile: `api.deletePatient`, inline-confirm Delete button on patient detail,
+  new `destructive` Button variant.
+
+**UX fixes (mobile):**
+- Inline account transactions refetch after a write (`refreshKey`) — no longer
+  stale until remount.
+- MFA code field `autoFocus` on the challenge screen (web challenge + Security
+  section inputs too).
+- Scheduled-deposit pending-days label reworded to a plain question (no "notify"
+  wording — the app sends no notifications).
+
+**Navigation/state fixes (mobile, found in smoke test):** delete now pops back to
+the existing patients screen (no duplicated screen / phantom back button); the
+patients list reloads on focus (`useFocusEffect`) so a deleted patient doesn't
+linger; a missing patient (`getPatient` → null) shows a calm message instead of
+an endless spinner.
+
+**Repo professionalization (both repos):** source-available LICENSE
+(all-rights-reserved, no redistribution) replacing the web MIT file; README
+license sections aligned; mobile GitHub topics added. Security re-audited —
+no secret in tree or history.
+
+Commits — mobile: `a8875d5`, `6890b3a`, `3173ac3`; web: `61026c1`, `eea9bd3`.
+
+## M4 candidates (not started)
 
 Re-add a read-only checks/workbooks list if wanted; a global loading/transition
 indicator; native date picker for scheduled deposits (currently a YYYY-MM-DD
