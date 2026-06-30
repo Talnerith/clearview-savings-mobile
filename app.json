@@ -2,7 +2,7 @@
   "expo": {
     "name": "Clearview Savings",
     "slug": "clearview-savings-mobile",
-    "version": "0.1.0",
+    "version": "0.3.0",
     "orientation": "portrait",
     "scheme": "clearviewsavings",
     "userInterfaceStyle": "light",
