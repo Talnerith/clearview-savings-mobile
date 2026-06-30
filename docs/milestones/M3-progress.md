@@ -96,6 +96,16 @@ no secret in tree or history.
 
 Commits — mobile: `a8875d5`, `6890b3a`, `3173ac3`; web: `61026c1`, `eea9bd3`.
 
+## Release: v0.3.0 APK (2026-06-30 session)
+
+Published the most-recent Android build for on-device testing. Bumped
+`app.json` 0.1.0 → 0.3.0 (commit `cc97a4f`), ran `eas build -p android
+--profile preview` (EAS build `7e52a960`, reused the v0.1.0 keystore), and cut
+GitHub release **v0.3.0** with `clearview-savings-0.3.0.apk` (79 MB) attached —
+now the "latest" release the README links to. Android-only; iPhone users use the
+web demo (native iOS needs an Apple Developer account + TestFlight). Deployment
+facts updated in `memory/deployment.md`.
+
 ## M4 candidates (not started)
 
 Re-add a read-only checks/workbooks list if wanted; a global loading/transition

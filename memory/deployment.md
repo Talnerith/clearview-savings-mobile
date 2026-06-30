@@ -17,8 +17,14 @@ Public deployment targets for Clearview Savings Mobile (all under GitHub user
 - **EAS project:** `@talnerith/clearview-savings-mobile` (projectId in
   `app.json`). Android `preview` profile → standalone APK. Run builds from a
   real terminal (TTY needed for the keystore prompt).
-- **APK release:** https://github.com/Talnerith/clearview-savings-mobile/releases/tag/v0.1.0
-  — replace the asset with `gh release upload v0.1.0 <apk> --clobber`.
+- **APK release (latest):** https://github.com/Talnerith/clearview-savings-mobile/releases/tag/v0.3.0
+  (Android-only; `app.json` version 0.3.0, versionCode 1, signed with the same
+  keystore as v0.1.0). README's "latest release" link auto-follows. To cut a new
+  release: bump `app.json` version → `eas build -p android --profile preview` →
+  download the artifact → `gh release create vX.Y.Z <apk> --target master`. To
+  refresh an existing release's asset instead: `gh release upload vX.Y.Z <apk> --clobber`.
+  No iOS build is published — iPhone users use the web demo (above); a native iOS
+  build needs an Apple Developer account ($99/yr) + TestFlight.
 
 **Why:** this is a portfolio repo for a junior-dev application — the live demo +
 public release + green CI are the "publicly viewable working app" proof. Keep
