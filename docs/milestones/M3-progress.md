@@ -106,6 +106,36 @@ now the "latest" release the README links to. Android-only; iPhone users use the
 web demo (native iOS needs an Apple Developer account + TestFlight). Deployment
 facts updated in `memory/deployment.md`.
 
+## Post-M3 follow-up (2026-07-06 session) — abuse hardening, cross-repo
+
+Prompted by a "could scammers abuse this?" question on the web repo. The web app
+owns the full anti-abuse treatment (web **ADR 0008**: no money-in path ever,
+disclosure on every artifact incl. printed checks/workbooks, a `patient-threshold`
+ops alert, a caregiver attestation at sign-up, a report-misuse affordance). This
+session mapped that posture onto mobile:
+
+- **Report misuse — ported.** `components/LegalLinks.tsx` gains a "Report misuse"
+  `mailto:support@clearviewsavings.com` link beside About/Privacy/Terms/Security.
+- **Volume monitoring — not duplicated.** Mobile creates patients via the web
+  endpoint `POST /api/m/patients` (`lib/api.ts` → `api.addPatient`), which now
+  runs the shared `addPatient` core that fires the threshold alert. Nothing to
+  add on-device.
+- **Attestation — not applicable.** Mobile is **sign-in only** (the only
+  "no account" path is demo mode); caregivers register and attest on the web.
+  **If a mobile sign-up is ever added, it must carry the same attestation.**
+- **Printed-artifact disclosure — not applicable.** Checks/workbooks are
+  web-rendered; mobile generates no PDFs.
+
+Recorded as mobile **ADR 0003** (`docs/decisions/0003-abuse-threat-model.md`) so
+the "why nothing here" is durable and a future session doesn't drop a control by
+moving code onto the device. typecheck + lint green. Commit `d38aef1`, pushed
+(web-demo Vercel deploy). Web-side detail: `../clearview-savings/docs/milestones/M9-progress.md`
+"Post-M9 addendum (2026-07-06)".
+
+No new APK cut — the single legal-footer link doesn't warrant a standalone
+release; fold it into the next mobile feature release (would need an `app.json`
+bump + `eas build`, per the v0.3.0 process above).
+
 ## M4 candidates (not started)
 
 Re-add a read-only checks/workbooks list if wanted; a global loading/transition
