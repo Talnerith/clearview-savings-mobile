@@ -136,6 +136,18 @@ No new APK cut — the single legal-footer link doesn't warrant a standalone
 release; fold it into the next mobile feature release (would need an `app.json`
 bump + `eas build`, per the v0.3.0 process above).
 
+### Follow-up (2026-07-11): v0.3.1 APK cut anyway
+
+Per user request ("I like everything updated"), cut a refresh release rather
+than waiting. Bumped `app.json` 0.3.0 → 0.3.1 and added `autoIncrement: true`
+to the `preview` profile so the Android `versionCode` increments (1 → 2) and
+the APK installs cleanly over v0.3.0. typecheck + lint green. Commit `ae340d2`,
+pushed. EAS build `205abe43` (FINISHED). Release:
+https://github.com/Talnerith/clearview-savings-mobile/releases/tag/v0.3.1 —
+contents = the report-misuse legal-footer link (`d38aef1`). No OTA: `expo-updates`
+is still not installed; distribution stays rebuild-the-APK-and-release (see
+[[deployment]]).
+
 ## M4 candidates (not started)
 
 Re-add a read-only checks/workbooks list if wanted; a global loading/transition

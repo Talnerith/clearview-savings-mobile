@@ -17,12 +17,17 @@ Public deployment targets for Clearview Savings Mobile (all under GitHub user
 - **EAS project:** `@talnerith/clearview-savings-mobile` (projectId in
   `app.json`). Android `preview` profile → standalone APK. Run builds from a
   real terminal (TTY needed for the keystore prompt).
-- **APK release (latest):** https://github.com/Talnerith/clearview-savings-mobile/releases/tag/v0.3.0
-  (Android-only; `app.json` version 0.3.0, versionCode 1, signed with the same
-  keystore as v0.1.0). README's "latest release" link auto-follows. To cut a new
-  release: bump `app.json` version → `eas build -p android --profile preview` →
-  download the artifact → `gh release create vX.Y.Z <apk> --target master`. To
+- **APK release (latest):** https://github.com/Talnerith/clearview-savings-mobile/releases/tag/v0.3.1
+  (Android-only; `app.json` version 0.3.1, versionCode 2, signed with the same
+  keystore as v0.1.0). The `preview` profile now has `autoIncrement: true`, so
+  EAS bumps the Android `versionCode` each build (v0.3.0 was 1 → v0.3.1 is 2) and
+  the new APK installs cleanly over the prior install — no uninstall needed.
+  README's "latest release" link auto-follows. To cut a new release: bump
+  `app.json` version → commit + push → `eas build -p android --profile preview`
+  → download the artifact → `gh release create vX.Y.Z <apk> --target master`. To
   refresh an existing release's asset instead: `gh release upload vX.Y.Z <apk> --clobber`.
+  Note: EAS prints a harmless "expo-updates not installed" warning because the
+  profiles carry a `channel` field but we don't use OTA — safe to ignore.
   No iOS build is published — iPhone users use the web demo (above); a native iOS
   build needs an Apple Developer account ($99/yr) + TestFlight.
 
